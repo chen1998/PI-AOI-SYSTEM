@@ -1,0 +1,290 @@
+/* inspection.css — 深色主題 + Inspection 版面（獨立於 aoi_density） */
+
+/* ========== 版面 ========== */
+#inspection-root{
+  grid-column: 1 / -1;
+  padding: 5px;
+  display: block;
+}
+
+/* 上半：左右 8:2；左側包含 info(2) + charts(8)；右側為 filter；兩側等高 */
+.inspection-grid-82{
+  display: grid;
+  grid-template-columns: 8.5fr 1.5fr;
+  gap: 12px;
+  height: 500px;
+  max-height: 750px;
+  min-height: 0;
+}
+
+/* 左側：info : charts = 2 : 8 */
+.inspection-left{
+  display: grid;
+  grid-template-rows: 0.5fr 9.5fr;
+  gap: 2px;
+  min-height: 0;
+}
+
+#inspection-info.card-sub,
+#inspection-charts.card-sub{
+  border:1px solid var(--line);
+  background: var(--card);
+  border-radius: 10px;
+  padding: 8px;
+  min-height: 0;
+  overflow: auto;
+}
+
+#inspection-facet{
+  width: 100%;
+  overflow: visible;
+}
+
+/* info 區塊 */
+#inspection-info.card-sub{ height: 50px; }
+.inspection-info-head { margin: 0; }
+.inspection-info-head .t{
+  margin:0 0 2px;
+  font-size:16px;
+  font-weight:700;
+}
+.inspection-info-head .sub{
+  margin:2px 0 4px;
+  font-size:12.5px;
+}
+
+/* 圖表容器 + Tabs 間距精簡 */
+#inspection-charts.card-sub{ 
+  max-height: 500px; 
+  overflow: auto;
+}
+.inspection-tabs{
+  display: flex;
+  gap: 6px;
+  margin: 4px 0 0;   /* 縮小上下間距 */
+}
+
+/* 右側：Filter 等高，超出可捲 */
+#inspection-right.card-sub{
+  border:1px solid var(--line);
+  background: var(--card);
+  border-radius: 10px;
+  padding: 8px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  min-height:0;
+  overflow:auto;
+}
+.filter-panel-title{ font-weight:700; margin-bottom:4px; }
+.filter-item{ display:flex; flex-direction:column; gap:6px; }
+.filter-item .lbl{ font-size:12.5px; opacity:.9; }
+.filter-item .row.inline{ display:flex; align-items:center; gap:6px; }
+.filter-item .row.inline .sep{ font-size:12px; opacity:.8; }
+.filter-actions{ margin-top:auto; display:flex; gap:8px; }
+
+/* ========== MultiDD 下拉式多選（Inspection 專用） ========== */
+.multi-dd-host{ width:100%; }
+
+#inspection-right .multi-dd{
+  width:100%;
+  position:relative;
+}
+#inspection-right .multi-dd-btn{
+  width:100%;
+  background:#151922;
+  border:1px solid #2b3240;
+  border-radius:6px;
+  padding:6px 10px;
+  font-size:13px;
+  text-align:left;
+  cursor:pointer;
+  color:#e6e9ef;
+}
+#inspection-right .multi-dd.open .multi-dd-btn{
+  filter:brightness(1.08);
+}
+#inspection-right .multi-dd-list{
+  position:absolute;
+  left:0;
+  right:0;
+  top:calc(100% + 6px);
+  background:#0f1115;
+  border:1px solid #2b3240;
+  border-radius:8px;
+  padding:8px;
+  z-index: 50;
+  max-height: 260px;
+  overflow:auto;
+  box-shadow: 0 8px 20px rgba(0,0,0,.35);
+}
+#inspection-right .multi-dd-item{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:4px 2px;
+}
+#inspection-right .multi-dd-footer{
+  display:flex;
+  gap:8px;
+  justify-content:flex-end;
+  margin-top:6px;
+}
+#inspection-right .multi-dd-search{
+  width:100%;
+  margin-bottom:6px;
+  background:#151922;
+  border:1px solid #2b3240;
+  border-radius:6px;
+  padding:6px 8px;
+  color:#e6e9ef;
+}
+
+/* 沒加 host 時退回 select multiple */
+#inspection-right select[multiple]{
+  width:100%;
+  min-height: 96px;
+  background:#151922;
+  border:1px solid #2b3240;
+  border-radius:6px;
+  padding:4px;
+  color:#cfd6e6;
+}
+
+/* ========== 下半：Table : Map = 6 : 4 ========== */
+.inspection-bottom-row{
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 5fr);
+  gap: 10px;
+  margin-top: 12px;
+  height: 300px;         /* 既定高度 */
+  max-height: 500px;     /* 最大高度 */
+  overflow: hidden;      /* 子內容不得超出 */
+}
+.inspection-bottom-row > * { min-width: 0 !important; }
+
+#inspection-table-wrap.card-sub,
+#inspection-map-wrap.card-sub{
+  display:flex;
+  flex-direction:column;
+  background: var(--card);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:0px;
+  min-height:0;
+  overflow:hidden;
+}
+
+#inspection-table-wrap .table-head{ font-weight:600; margin-bottom:6px; }
+
+/* 表格容器自己捲動 */
+#inspection-table-wrap .table-wrap{
+  overflow: auto !important;
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+/* Map 容器：左右 8:2；canvas 不捲、legend 垂直捲 */
+#inspection-map-wrap .map-viewport{
+  flex:1 1 auto;
+  min-height:0;
+  display:flex;
+  gap: 10px;
+  overflow:hidden; /* 不讓 viewport 本身出捲軸 */
+}
+
+/* canvas 吃滿容器高度，不超出父層 */
+#inspection-mini-map{
+  width:100%;
+  height:100%;
+  display:block;
+  background:#0f1115;
+}
+
+/* ========== 表格（整張表 X 向捲動；不換行） ========== */
+#inspection-table-wrap { max-width: 100%; }
+
+#inspection-table,
+.inspection-table{
+  width: max-content;          /* 依內容展開 */
+  min-width: 0;
+  table-layout: auto;
+  font-size:14px;
+  color: #e6e9ef;
+  background: #0f131a;
+  border-collapse: collapse;
+}
+
+/* 強制不換行 */
+#inspection-table thead, 
+#inspection-table tbody, 
+#inspection-table tr, 
+#inspection-table th, 
+#inspection-table td{
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#inspection-table thead th{
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  color: #e6e9ef;
+  font-weight: 600;
+  background: #0f131a;
+  border-bottom: 1px solid #2b3240;
+  padding: 8px 6px;
+  text-align: left;
+  height: 32px;
+}
+#inspection-table tbody td{
+  color: #cfd6e6;
+  border-bottom: 1px solid color-mix(in oklab, currentColor 12%, transparent);
+  padding: 8px 6px;
+  vertical-align: middle;
+}
+#inspection-table tbody tr.main-row:hover{
+  filter: brightness(1.05);
+}
+#inspection-table td.merged{
+  font-weight: 600;
+  background: #10141b;
+  border-right: 1px solid color-mix(in oklab, currentColor 14%, transparent);
+}
+
+/* 子表格（如後續需要） */
+.inspection-table.sub-table{
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+  font-size: 13px;
+  background: #20242c;
+  border-top: 1px dashed color-mix(in oklab, currentColor 22%, transparent);
+}
+.inspection-table.sub-table thead th{
+  border-bottom: 1px solid color-mix(in oklab, currentColor 18%, transparent);
+  padding: 6px 6px;
+  text-align: left;
+}
+.inspection-table.sub-table tbody td{
+  border-bottom: 1px solid color-mix(in oklab, currentColor 12%, transparent);
+  padding: 6px 6px;
+}
+
+/* Inspection 專用欄寬（如有需要可自行調整） */
+#inspection-table .col-line_id { width: 90px; }
+#inspection-table .col-aoi_id { width: 90px; }
+#inspection-table .col-model_id { width: 180px; }
+#inspection-table .col-glass_side { width: 70px; text-align: center; }
+#inspection-table .col-defect_code { width: 160px; }
+#inspection-table .col-density { width: 100px; text-align: right; }
+#inspection-table .col-glass_count { width: 110px; text-align: right; }
+#inspection-table .col-bytimehour { width: 140px; }
+
+/* 其他共用小樣式 */
+.muted{ opacity:.7; padding:8px; }

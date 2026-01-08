@@ -1,0 +1,469 @@
+
+/* ============================================================
+   AOI CAPA — Layout + Card 樣式
+   ============================================================ */
+   #aoi_capa-root {
+    grid-column: 1 / -1;
+    padding: 5px;
+}
+
+/* 上半：左右 8:2 */
+.aoi_capa-grid-82 {
+    display: grid;
+    grid-template-columns: minmax(0, 8fr) minmax(260px, 1.5fr);
+    gap: 6px;
+    align-items: stretch;
+    min-height: 0;
+    height: 500px;
+}
+
+/* 左側 info : charts = 0.5 : 9.5 */
+.aoi_capa-left {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 4px;
+    min-height: 0;
+}
+
+#aoi_capa-info.card-sub,
+#aoi_capa-charts.card-sub {
+    border: 1px solid var(--line);
+    background: var(--card);
+    border-radius: 10px;
+    padding: 8px;
+    min-height: 0;
+}
+
+#aoi_capa-facet {
+    flex: 1 1 auto;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+#aoi_capa-facet {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;         /* 避免外溢 */
+}
+
+.aoi_capa-chart-item {
+    overflow: hidden;         /* 個別子圖避免超出區塊 */
+}
+
+/* Info */
+.aoi_capa-info-head .t {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+/* Charts */
+#aoi_capa-charts.card-sub {
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+}
+
+.aoi_capa-tabs {
+    display: flex;
+    gap: 6px;
+}
+
+/* ============================================================
+   右側 Filter（上 : 4， 下：6）
+   ============================================================ */
+
+#aoi_capa-right.card-sub {
+    border: 1px solid #262c3b;
+    background: radial-gradient(circle at 0 0, #1c2333, #0b0f18) !important;
+    border-radius: 10px;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 上：篩選區（4） */
+.aoi_capa-right-top {
+    flex: 4 1 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+/* 將日期 input 的文字顏色改為黑色 */
+#aoi_capaStart,
+#aoi_capaEnd {
+    color: #d8d5d5;              /* 黑色字 */
+    background-color: #19181f;   /* 建議補白底 */
+}
+
+/* Chrome/Edge/Safari 必須處理 calendar icon */
+#aoi_capaStart::-webkit-calendar-picker-indicator,
+#aoi_capaEnd::-webkit-calendar-picker-indicator {
+    filter: invert(0);  /* 保留黑色，不會被反白 */
+}
+/* 日期 + MultiDD */
+.aoi_capa-filter-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.aoi_capa-filter-item .lbl {
+    font-size: 14px;
+    opacity: .9;
+}
+
+.aoi_capa-filter-item .row.inline {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.aoi_capa-filter-item .row.inline .sep {
+    font-size: 12px;
+    opacity: .8;
+}
+
+.aoi_capa-filter-actions {
+    margin-left: auto;     /* 按鈕靠右 */
+    display: flex;
+    gap: 6px;
+}
+
+/* MultiDD 主體 */
+#aoi_capa-right .multi-dd-host {
+    width: 100%;
+}
+#aoi_capa-right .multi-dd {
+    width: 100%;
+    position: relative;
+}
+#aoi_capa-right .multi-dd-btn {
+    width: 100%;
+    background: #151922;
+    border: 1px solid #2b3240;
+    border-radius: 6px;
+    padding: 5px 9px;
+    font-size: 13px;
+    text-align: left;
+    cursor: pointer;
+    color: #e6e9ef;
+}
+#aoi_capa-right .multi-dd.open .multi-dd-btn {
+    filter: brightness(1.08);
+}
+#aoi_capa-right .multi-dd-list {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 6px);
+    background: #0f1115;
+    border: 1px solid #2b3240;
+    border-radius: 8px;
+    padding: 8px;
+    z-index: 50;
+    max-height: 260px;
+    overflow: auto;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .35);
+}
+#aoi_capa-right .multi-dd-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 2px;
+}
+#aoi_capa-right .multi-dd-footer {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 6px;
+}
+#aoi_capa-right .multi-dd-search {
+    width: 100%;
+    margin-bottom: 6px;
+    background: #151922;
+    border: 1px solid #2b3240;
+    border-radius: 6px;
+    padding: 6px 8px;
+    color: #e6e9ef;
+}
+
+#aoi_capa-right select[multiple] {
+    width: 100%;
+    min-height: 96px;
+    background: #151922;
+    border: 1px solid #2b3240;
+    border-radius: 6px;
+    padding: 4px;
+    color: #cfd6e6;
+    margin-bottom: 10px;
+}
+
+/* 下：AOI Target / SPEC（6） */
+.aoi_capa-right-bottom {
+    flex: 6 1 0;
+    padding-top: 6px;
+    border-top: 1px dashed rgba(255,255,255,0.15);
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* ============================================================
+   AOI Target / SPEC 表
+   ============================================================ */
+.aoi_capa-rtarget {
+    border: 1px solid #262c3b;
+    background: radial-gradient(circle at 0 0, #171c29, #0a0d14);
+    border-radius: 8px;
+    padding: 6px 8px;
+}
+
+.aoi_capa-rtarget-head {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.aoi_capa-rtarget-head .title {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.aoi_capa-rtarget-head .actions {
+    margin-left: auto;
+    display: flex;
+    gap: 4px;
+}
+
+.aoi_capa-rtarget-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+    color: #e6e9ef;
+}
+
+.aoi_capa-rtarget-table thead th {
+    padding: 4px 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+    text-align: left;
+    white-space: nowrap;
+}
+
+.aoi_capa-rtarget-table tbody td {
+    padding: 4px 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    vertical-align: middle;
+}
+
+.aoi_capa-rtarget-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* 編輯 input */
+.aoi_capa-rtarget-input {
+    width: 100%;
+    padding: 2px 4px;
+    border-radius: 4px;
+    background: #111827;
+    border: 1px solid #374151;
+    color: #e5e7eb;
+}
+
+/* ============================================================
+   下半：Table (8) + Day Detail (2)
+   ============================================================ */
+
+.aoi_capa-table-section {
+    margin-top: 12px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    border-radius: 10px;
+    padding: 6px;
+}
+
+.aoi_capa-table-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 8fr) minmax(220px, 1.6fr);
+    gap: 8px;
+}
+
+/* ========== 右側 Day Detail ========== */
+#aoi_capa-day-detail {
+    border: 1px solid #262c3b;
+    background: radial-gradient(circle at 0 0, #1c2333, #0b0f18);
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 13px;
+    color: #e6e9ef;
+    display: none;          /* 預設隱藏 */
+    flex-direction: column; /* 顯示時上下排列：上=標頭(row)，下=表格 */
+}
+
+#aoi_capa-day-detail.show {
+    display: flex !important;  /* 如果之後用 class 切換也 OK */
+}
+
+/* 標頭：Day Info + 按鈕 水平排列 */
+.aoi_capa-day-detail .detail-head {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.aoi_capa-day-detail .detail-title {
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.03em;
+}
+
+.aoi_capa-day-detail .detail-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 4px;
+}
+
+/* Day Detail 表格 —— 套用與 AOI Target / SPEC 類似風格 */
+.aoi_capa-day-detail .detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 12.5px;
+    color: #e6e9ef;
+    margin-top: 2px;
+}
+
+.aoi_capa-day-detail .detail-table th,
+.aoi_capa-day-detail .detail-table td {
+    padding: 4px 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.aoi_capa-day-detail .detail-table tr:last-child th,
+.aoi_capa-day-detail .detail-table tr:last-child td {
+    border-bottom: none;
+}
+
+.aoi_capa-day-detail .detail-table th {
+    width: 90px;
+    white-space: nowrap;
+    text-align: right;
+    font-weight: 500;
+    color: #9ca3b8;
+}
+
+.aoi_capa-day-detail .detail-table td {
+    padding-left: 8px;
+    color: #e6e9ef;
+    vertical-align: top;
+    max-width: 230px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Comment 區塊可捲動 */
+.aoi_capa-day-detail td[data-field="comment"] {
+    max-height: 110px;
+    overflow: auto;
+}
+
+/* 編輯時的 textarea */
+.aoi_capa-day-detail .detail-comment-editor {
+    width: 100%;
+    min-height: 80px;
+    max-height: 140px;
+    resize: vertical;
+    padding: 4px 6px;
+    border-radius: 6px;
+    border: 1px solid #2b3240;
+    background: #111827;
+    color: #e6e9ef;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+/* ============================================================
+   Hourly Table / Day Table — 分開 CSS
+   ============================================================ */
+
+/* 讓所有儲存格上下置中、寬度一致 */
+#aoi_capa-table.hourly th,
+#aoi_capa-table.hourly td {
+    vertical-align: middle;      /* 上下置中 */
+    text-align: center;          /* 預設置中 */
+    padding: 6px;
+    width: 60px;                 /* 統一欄寬（可依你實際寬度調整）*/
+    box-sizing: border-box;      /* 寬度不被 padding 影響 */
+    word-break: break-word;
+}
+
+/* 第一列（表頭）靠左 */
+#aoi_capa-table.hourly thead tr:first-child th {
+    text-align: left !important;
+}
+
+/* 第一列（內容，若有）靠左 */
+#aoi_capa-table.hourly tbody tr:first-child td {
+    text-align: left !important;
+}
+
+/* 保證第一列的 th/td 對齊一致 */
+#aoi_capa-table.hourly tbody tr:first-child th {
+    text-align: left !important;
+}
+
+/* 其他列（第二列之後）保持置中 */
+#aoi_capa-table.hourly tbody tr:nth-child(n+2) th{
+    text-align: center !important;
+}
+
+#aoi_capa-table.hourly tbody tr:nth-child(n+2) td {
+    text-align: center !important;
+}
+
+/* ============================================================
+   表格共用設定
+   ============================================================ */
+#aoi_capa-table thead th {
+    position: sticky;
+    top: 0;
+    background: #0f131a;
+    font-weight: 600;
+    padding: 8px 10px;
+}
+
+#aoi_capa-table {
+    background: #0f131a;
+    color: #e6e9ef;
+}
+
+#aoi_capa-table.hourly td,
+#aoi_capa-table.hourly th {
+    background: #141927;
+}
+
+#aoi_capa-table.day td,
+#aoi_capa-table.day th {
+    background: #10141b;
+}
+
+
+#aoi_capa-table tbody td {
+    padding: 8px 10px;
+}
+
+/* 換行處理 */
+#aoi_capa-root table th,
+#aoi_capa-root table td {
+    white-space: pre-line !important;
+}
+
+/* Responsive */
+@media (max-width: 1280px) {
+    .aoi_capa-table-grid {
+        grid-template-columns: 1fr;
+    }
+}

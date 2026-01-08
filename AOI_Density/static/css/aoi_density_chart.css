@@ -1,0 +1,19 @@
+
+
+/* static/css/aoi_density/chart.css */
+
+/* 單一大圖容器 */
+.aoi-density-grid{
+  display: block;
+  width: 100%;
+}
+.aoi-bigchart{
+  width: 100%;
+  min-height: 320px;
+}
+
+/* 舊面板類別保留但不顯示，避免干擾其它頁 */
+.aoi-col{ display:none; }
+
+/* 小字提示 */
+.muted{ opacity:.7; padding:8px; }

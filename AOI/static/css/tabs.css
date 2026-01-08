@@ -1,0 +1,39 @@
+/* tabs.css / top.css */
+.sys-tabs{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+}
+.sys-tab{
+  background:#1a1f28;
+  color:#d5deea;
+  border:1px solid #2a3140;
+  border-radius:8px;
+  padding:6px 10px;
+  cursor:pointer;
+}
+.sys-tab.active{
+  background:#243046;
+  border-color:#34507a;
+  color:#fff;
+}
+
+.line-tabs{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+}
+.tab-btn{
+  background:#1a1f28;
+  color:#d5deea;
+  border:1px solid #2a3140;
+  border-radius:20px;
+  padding:6px 12px;
+  cursor:pointer;
+  font-size:13px;
+}
+.tab-btn.active{
+  background:#243046;
+  border-color:#34507a;
+  color:#fff;
+}

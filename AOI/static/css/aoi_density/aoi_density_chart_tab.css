@@ -1,0 +1,231 @@
+/* ==========================
+   共用色系（與 table tab 一致）
+   ========================== */
+   :root {
+    --aoi-bg: #10131c;
+    --aoi-panel-bg: #171c28;
+    --aoi-border: #2b3243;
+    --aoi-border-soft: rgba(255, 255, 255, 0.04);
+    --aoi-accent: #4d7dff;
+    --aoi-accent-soft: rgba(77, 125, 255, 0.18);
+    --aoi-text: #e8edf7;
+    --aoi-muted: #aeb6c7;
+  }
+  
+  /* Section 根 */
+  .aoi-density-section.aoi-density-chart-sec {
+    margin-top: 12px;
+    color: var(--aoi-text);
+  }
+  
+  .aoi-density-chart-sec .aoi-sec-inner {
+    background: radial-gradient(circle at top left, rgba(77, 125, 255, 0.14), transparent 60%),
+                linear-gradient(135deg, #10131c, #141928);
+    border-radius: 10px;
+    border: 1px solid var(--aoi-border);
+    padding: 14px 16px 18px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  }
+  
+  /* Header 區與 table tab 共用樣式 */
+  .aoi-density-chart-sec .aoi-sec-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--aoi-border-soft);
+    margin-bottom: 12px;
+  }
+  
+  .aoi-density-chart-sec .aoi-title-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .aoi-density-chart-sec .aoi-sec-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--aoi-text);
+  }
+  
+  .aoi-density-chart-sec .aoi-sec-desc {
+    font-size: 12px;
+    color: var(--aoi-muted);
+  }
+  
+  .aoi-density-chart-sec .aoi-announcement {
+    min-width: 200px;
+    max-width: 280px;
+    font-size: 12px;
+    color: var(--aoi-accent);
+    background: rgba(77, 125, 255, 0.1);
+    border: 1px solid var(--aoi-accent-soft);
+    border-radius: 6px;
+    padding: 8px 10px;
+  }
+  
+  /* ===== Chart Group 卡片 ===== */
+  
+  .aoi-chart-group {
+    margin-top: 12px;
+    border-radius: 9px;
+    border: 1px solid var(--aoi-border-soft);
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.02), rgba(10, 12, 20, 0.92));
+    padding: 10px 12px 12px;
+  }
+  
+  /* 第 1 組可略微強調 */
+  .aoi-chart-group[data-chart-group="1"] {
+    border-color: rgba(77, 125, 255, 0.35);
+  }
+  
+  /* group header */
+  .aoi-chart-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .aoi-chart-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+  }
+  
+  .aoi-chart-title-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--aoi-text);
+  }
+  
+  .aoi-chart-subtitle {
+    font-size: 11px;
+    color: var(--aoi-muted);
+    opacity: 0.9;
+  }
+  
+  /* filter 列 */
+  .aoi-chart-filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+    padding: 6px 8px;
+    border-radius: 7px;
+    background-color: #151a26;
+    border: 1px solid var(--aoi-border-soft);
+  }
+  
+  .aoi-chart-filter-row .aoi-filter-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .aoi-chart-filter-row .aoi-filter-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+  }
+  
+  .aoi-chart-filter-row .aoi-field-label {
+    font-size: 11px;
+    color: var(--aoi-muted);
+  }
+  
+  .aoi-chart-filter-row .aoi-input,
+  .aoi-chart-filter-row .aoi-select {
+    height: 24px;
+    padding: 1px 8px;
+    border-radius: 5px;
+    border: 1px solid var(--aoi-border);
+    background-color: #141927;
+    color: var(--aoi-text);
+    font-size: 11px;
+  }
+  
+  .aoi-chart-filter-row .aoi-input:focus,
+  .aoi-chart-filter-row .aoi-select:focus {
+    border-color: var(--aoi-accent);
+    box-shadow: 0 0 0 1px rgba(77, 125, 255, 0.35);
+  }
+  
+  .aoi-chart-filter-row .aoi-sep {
+    color: var(--aoi-muted);
+    font-size: 11px;
+  }
+  
+  /* 按鈕（沿用 btn class，但在本區微調） */
+  .aoi-chart-filter-row .btn {
+    font-size: 11px;
+    padding: 2px 9px;
+    border-radius: 999px;
+  }
+  
+  .aoi-chart-filter-row .btn:not(.btn-secondary) {
+    background: linear-gradient(135deg, #4d7dff, #6a9bff);
+    border: 0;
+    color: #ffffff;
+  }
+  
+  .aoi-chart-filter-row .btn.btn-secondary {
+    background: transparent;
+    border: 1px solid var(--aoi-border);
+    color: var(--aoi-muted);
+  }
+  
+  /* ===== Chart 畫布容器 ===== */
+  
+  .aoi-chart-body {
+    margin-top: 8px;
+    border-radius: 7px;
+    background-color: #10131d;
+    border: 1px solid var(--aoi-border-soft);
+    padding: 6px 6px 8px;
+  }
+  
+  .aoi-chart-container {
+    width: 100%;
+    /* 讓圖固定高度，手機版仍可捲動 */
+    height: 260px;
+  }
+  
+  /* 若要三張圖高度稍微有差異，也可這樣寫：
+  #aoi_density-chart1 { height: 260px; }
+  #aoi_density-chart2 { height: 230px; }
+  #aoi_density-chart3 { height: 260px; }
+  */
+  
+  /* ===== RWD 小調整 ===== */
+  
+  @media (max-width: 1024px) {
+    .aoi-density-chart-sec .aoi-sec-header {
+      flex-direction: column;
+    }
+  
+    .aoi-density-chart-sec .aoi-announcement {
+      max-width: 100%;
+      width: 100%;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .aoi-chart-filter-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .aoi-chart-filter-row .aoi-filter-actions {
+      margin-left: 0;
+      align-self: flex-end;
+    }
+  
+    .aoi-chart-container {
+      height: 220px;
+    }
+  }

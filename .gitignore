@@ -1,0 +1,10 @@
+# 虛擬環境
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# log
+*.log

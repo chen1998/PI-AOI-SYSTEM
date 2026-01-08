@@ -1,0 +1,360 @@
+/* ===================== Spec Table Layout ===================== */
+
+#aoi_density-spec-table{
+  grid-column: 1 / -1;
+  padding: 5px;
+  display: block;
+  max-height: 800px;
+  min-height: 750px;
+}
+
+/* 上半：左右 8:2 */
+.aoi_spec-grid-82{
+  display: grid;
+  grid-template-columns: 8.5fr 1.5fr;
+  gap: 12px;
+}
+
+/* 左：Info + Table */
+.aoi_spec-left{
+  display: grid;
+  /*grid-template-rows: 1fr 9fr;*/
+  gap: 2px;
+}
+
+#aoi_spec-info.card-sub{
+  border:1px solid var(--line);
+  background: var(--card);
+  border-radius: 10px;
+  padding: 8px;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* Info head + header buttons */
+.aoi_spec-info-head{
+  margin: 0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+
+.aoi_spec-info-head .t{
+  margin:0;
+  font-size:16px;
+  font-weight:700;
+}
+
+.spec-header-actions{
+  display:flex;
+  gap:6px;
+}
+
+.spec-header-actions .btn-spec-action{
+  border:1px solid #2b3240;
+  background:#151922;
+  border-radius:4px;
+  padding:4px 8px;
+  font-size:12px;
+  cursor:pointer;
+  color:#e6e9ef;
+}
+
+/* Spec Table 外層：flex，pager 在底部 */
+#aoi_spec-left .table-wrap{
+  border:1px solid var(--line);
+  background: var(--card);
+  border-radius: 10px;
+  padding: 0;
+  min-height:0;
+  overflow: hidden;
+  display:flex;
+  flex-direction:column;
+  width:100%;
+  min-height: 680px;
+}
+
+/* 中間真正可捲動的區域 */
+#aoi_spec-left .table-wrap .table-scroll{
+  flex: 1 1 auto;
+  overflow: auto;
+}
+
+/* 表寬度跟容器同寬＋固定 layout */
+#aoi_spec-table{
+  width:100%;
+  min-width: 100%;
+  table-layout: fixed;
+  font-size:14px;
+  color: #e6e9ef;
+  background: #0f131a;
+  border-collapse: collapse;
+}
+
+/* thead / tbody / tr / th / td 共用基底 */
+#aoi_spec-table thead,
+#aoi_spec-table tbody,
+#aoi_spec-table tr,
+#aoi_spec-table th,
+#aoi_spec-table td{
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#aoi_spec-table thead th{
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  color: #e6e9ef;
+  font-weight: 600;
+  background: #0f131a;
+  border-bottom: 1px solid #2b3240;
+  padding: 8px 6px;
+  text-align: left;
+  height: 32px;
+}
+#aoi_spec-table tbody td{
+  color: #cfd6e6;
+  border-bottom: 1px solid color-mix(in oklab, currentColor 12%, transparent);
+  padding: 8px 6px;
+  vertical-align: middle;
+}
+#aoi_spec-table tbody tr:hover{ filter: brightness(1.05); }
+
+/* Editor 欄位允許換行 */
+#aoi_spec-table td.editor-cell{
+  white-space: normal !important;
+}
+
+/* 編輯模式 input/select */
+.spec-edit-input,
+.spec-edit-select{
+  width:100%;
+  min-width:0;
+  font-size:12px;
+  padding:4px 6px;
+  border-radius:4px;
+  border:1px solid #4a5a78;
+  background:#1b2230;     /* 比原本再亮一點，字更清楚 */
+  color:#5a6281;
+}
+
+/* 分頁列：在 table-wrap 最下方 */
+#aoi_spec-pager.aoi_spec-pager{
+  flex:0 0 auto;
+  margin-top:4px;
+  padding:4px 6px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:6px;
+  font-size:12px;
+  color:#cfd6e6;
+}
+.aoi_spec-pager-info{
+  margin-right:auto;
+  opacity:.8;
+}
+.aoi_spec-pager button{
+  border:1px solid #2b3240;
+  background:#151922;
+  border-radius:4px;
+  padding:2px 6px;
+  font-size:12px;
+  cursor:pointer;
+  color:#e6e9ef;
+}
+.aoi_spec-pager button[disabled]{
+  opacity:.4;
+  cursor:default;
+}
+.aoi_spec-pager .page-btn.active{
+  font-weight:700;
+  border-color:#4b8cff;
+}
+
+/* ===================== 新增 Panel ===================== */
+
+.spec-add-panel{
+  margin-top:6px;
+  border:1px dashed #2b3240;
+  background:#0f131a;
+  border-radius:8px;
+  padding:8px;
+  height: 120px;
+}
+
+/* 兩列：第一列 header，第二列 input/select，跟表格 row 類似 */
+.spec-add-table{
+  width:100%;
+  border-collapse:collapse;
+  table-layout:fixed;
+  font-size:13px;
+  height: 8px;
+}
+
+.spec-add-table thead th{
+  background:#141a25;
+  border-bottom:1px solid #2b3240;
+  padding:6px 4px;
+  text-align:left;
+  color:#e6e9ef;
+  white-space:nowrap;
+}
+
+.spec-add-table tbody td{
+  border-bottom:1px solid #2b3240;
+  padding:6px 4px;
+  vertical-align:middle;
+}
+
+/* 新增列的輸入框 / 下拉，顏色清楚 */
+.spec-add-input{
+  width:100%;
+  min-width:0;
+  font-size:12px;
+  padding:4px 6px;
+  border-radius:4px;
+  border:1px solid #4a5a78;
+  background:#1b2230;   /* 比主背景亮、字是很亮的白，對比高 */
+  color:#5d6275;
+  
+}
+
+.spec-add-input::placeholder{
+  color:rgba(26, 33, 61, 0.6);
+}
+
+.spec-add-footer{
+  margin-top:8px;
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+}
+
+/* ===================== Spec Filter Panel（右側） ===================== */
+
+#aoi_spec-right.card-sub{
+  border:1px solid var(--line);
+  background: var(--card);
+  border-radius: 10px;
+  padding: 8px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  min-height:0;
+  overflow:auto;
+}
+
+/* 標題 + 筆數顯示 */
+.spec-filter-panel-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  font-weight:700;
+  margin-bottom:4px;
+}
+.spec-filter-count{
+  font-weight:400;
+  font-size:12px;
+  opacity:.8;
+}
+
+.spec-filter-item{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.spec-filter-item .row.inline{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.spec-filter-item .row.inline .sep{
+  font-size:12px;
+  opacity:.8;
+}
+.spec-filter-actions{
+  margin-top:auto;
+  display:flex;
+  gap:8px;
+}
+
+/* 底部清空區 */
+.spec-filter-bottom-actions{
+  margin-top:8px;
+  display:flex;
+  justify-content:flex-end;
+}
+
+/* MultiDD 在 Spec Filter 裡的樣式（複製 density-right） */
+#aoi_spec-right .multi-dd-host{ width:100%; }
+
+#aoi_spec-right .multi-dd{
+  width:100%;
+  position:relative;
+}
+#aoi_spec-right .multi-dd-btn{
+  width:100%;
+  background:#151922;
+  border:1px solid #2b3240;
+  border-radius:6px;
+  padding:6px 10px;
+  font-size:13px;
+  text-align:left;
+  cursor:pointer;
+  color:#e6e9ef;
+}
+#aoi_spec-right .multi-dd.open .multi-dd-btn{
+  filter:brightness(1.08);
+}
+#aoi_spec-right .multi-dd-list{
+  position:absolute;
+  left:0;
+  right:0;
+  top:calc(100% + 6px);
+  background:#0f1115;
+  border:1px solid #2b3240;
+  border-radius:8px;
+  padding:8px;
+  z-index: 50;
+  max-height: 260px;
+  overflow:auto;
+  box-shadow: 0 8px 20px rgba(0,0,0,.35);
+}
+#aoi_spec-right .multi-dd-item{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:4px 2px;
+}
+#aoi_spec-right .multi-dd-footer{
+  display:flex;
+  gap:8px;
+  justify-content:flex-end;
+  margin-top:6px;
+}
+#aoi_spec-right .multi-dd-search{
+  width:100%;
+  margin-bottom:6px;
+  background:#151922;
+  border:1px solid #2b3240;
+  border-radius:6px;
+  padding:6px 8px;
+  color:#e6e9ef;
+}
+
+/* 沒加 host 時退回 select multiple */
+#aoi_spec-right select[multiple]{
+  width:100%;
+  min-height: 96px;
+  background:#151922;
+  border:1px solid #2b3240;
+  border-radius:6px;
+  padding:4px;
+  color:#cfd6e6;
+}

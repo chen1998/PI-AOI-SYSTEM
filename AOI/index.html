@@ -1,0 +1,896 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PI AOI 分析</title>
+
+  <script>
+    // AOI Defect Map API
+    window.API_BASE  = "http://10.97.142.217:8103";
+    // AOI Density API
+    window.API_BASE_DENSITY = "http://10.97.142.217:8103";
+
+    window.IMG_HOST = "http://10.97.139.98:1454";
+  </script>
+
+  
+  <!-- ===== JS ===== -->
+
+  <!-- 共用：echarts + system_tabs -->
+  <script src="static/js/echarts.min.js" defer></script>
+  <script src="static/js/system_tab2.js" defer></script>
+
+  <!-- AOI Inspection JS -->
+  <script src="static/js/aoi_inspection/service/api1.js"  defer></script>
+  <script src="static/js/aoi_inspection/service/service1.js"  defer></script>
+  <script src="static/js/aoi_inspection/service/router1.js"  defer></script>
+  <script src="static/js/aoi_inspection/function/multidd.js"  defer></script>
+  <script src="static/js/aoi_inspection/function/filter7.js"  defer></script>
+
+  <script src="static/js/aoi_inspection/function/chart4.js"  defer></script>
+  <script src="static/js/aoi_inspection/function/table2.js"  defer></script>
+  <script src="static/js/aoi_inspection/function/defect_map1.js"  defer></script>
+  <script src="static/js/aoi_inspection/tabs/table_tab2.js"  defer></script>
+
+  <script src="static/js/aoi_inspection/tabs/chart_tab1.js"  defer></script>
+
+  <!-- AOI Defect Map JS -->
+  <script src="static/js/aoi_defect_map/colors2.js" defer></script>
+  <script src="static/js/aoi_defect_map/bus1.js" defer></script>
+  <script src="static/js/aoi_defect_map/api3.js" defer></script>
+  <script src="static/js/aoi_defect_map/run_info_table4.js" defer></script>
+  <script src="static/js/aoi_defect_map/defect_map.js" defer></script>
+  <script src="static/js/aoi_defect_map/defect_list2.js" defer></script>
+
+  <!-- AOI Density JS -->
+  <script src="static/js/aoi_density/api3.js"  defer></script>
+  <script src="static/js/aoi_density/service3.js" defer></script>
+  <script src="static/js/aoi_density/router.js"  defer></script>
+  <script src="static/js/aoi_density/multidd2.js"  defer></script>
+  <script src="static/js/aoi_density/filter2.js"  defer></script>
+  <script src="static/js/aoi_density/chart.js"  defer></script>
+  <script src="static/js/aoi_density/table2.js"  defer></script>
+  <script src="static/js/aoi_density/defect_map.js"  defer></script>
+  <script src="static/js/aoi_density/tabs/chart_tab.js"  defer></script>
+  <script src="static/js/aoi_density/tabs/table_tab.js"  defer></script>
+
+
+
+
+  <!-- AOI Capa JS 
+  <script src="static/js/aoi_capa/" defer></script>
+  -->
+  <script src="static/js/aoi_capa/multidd.js" defer></script>
+  <script src="static/js/aoi_capa/filter1.js" defer></script>
+  <script src="static/js/aoi_capa/api1.js" defer></script>
+  <script src="static/js/aoi_capa/chart3.js" defer></script>
+  <script src="static/js/aoi_capa/table6.js" defer></script>
+
+  <script src="static/js/aoi_capa/router3.js" defer></script>
+  <script src="static/js/aoi_capa/right_target.js"></script>
+
+
+  <!-- 共用 CSS -->
+  <link rel="stylesheet" href="static/css/base1.css" />
+  <link rel="stylesheet" href="static/css/tabs.css" />
+
+  <!-- AOI Defect Map CSS -->
+  <link rel="stylesheet" href="static/css/aoi_defect_map/map.css" />
+  <link rel="stylesheet" href="static/css/aoi_defect_map/table.css" />
+  <link rel="stylesheet" href="static/css/aoi_defect_map/image.css" />
+  <link rel="stylesheet" href="static/css/aoi_defect_map/multi_filter.css" />
+
+  <!-- AOI Density CSS -->
+  <link rel="stylesheet" href="static/css/aoi_density/aoi_density.css" />
+  <link rel="stylesheet" href="/static/css/aoi_density/table_tab5.css">
+  <link rel="stylesheet" href="/static/css/aoi_density/aoi_density_chart_tab.css">
+
+  <!-- Insepction CSS -->
+  <link rel="stylesheet" href="static/css/inspection/inspection.css" />
+  <link rel="stylesheet" href="/static/css/inspection/table_tab.css">
+  <link rel="stylesheet" href="/static/css/inspection/chart_tab3.css">
+  <!-- AOI Capa CSS -->
+  <link rel="stylesheet" href="static/css/aoi_capa/capa.css" />
+
+</head>
+<body>
+<div id="app">
+  <!-- Top：共用 -->
+  <header id="top-container" class="card top">
+    <div class="top-left">
+      <nav id="system-tabs" class="sys-tabs">
+        <button class="sys-tab active" data-view="defect-map">同點比對</button>
+        <button class="sys-tab" data-view="aoi_density">AOI Density</button>
+        <button class="sys-tab" data-view="inspection">Inspection Density</button>
+        <button class="sys-tab" data-view="aoi_capa">稼動</button>
+
+      </nav>
+    </div>
+
+    <div class="top-center">
+      <h1>PI AOI 監控</h1>
+      <div id="all-tab-container" class="line-tabs"></div>
+    </div>
+
+    <div class="top-right">
+      <!-- 右上：Defect Map 用的日期區間 -->
+      <div class="inline-filter" id="global-filter">
+        <label>日期</label>
+        <input id="fDateFrom" type="date" />
+        <span>–</span>
+        <input id="fDateTo" type="date" />
+        <button id="applyDates" class="btn btn-sm">套用</button>
+        <button id="clearDates" class="btn btn-sm btn-secondary">清空</button>
+      </div>
+
+      <!-- 右上：AOI Density 子分頁（UPI / PSpot / SPS / SPEC ...） -->
+      <div id="aoi_density-subtabs" class="line-tabs" style="display:none;"></div>
+
+       <!-- 右上：Inspection 子分頁 -->
+      <div id="inspection-subtabs" class="line-tabs" style="display:none;"></div>
+
+    </div>
+  </header>
+
+  <!-- ===== Main：同一個 main-area，裡面放多個 root，靠 system_tab.js 顯示/隱藏 ===== -->
+  <main id="main-area">
+    <!-- ===================== AOI Defect Map root ===================== -->
+    <section id="defect-map-root">
+      <!-- 上排：Defect Map + Run Info（左右 1.3 : 1） -->
+      <div id="defect-main-row">
+        <!-- 左：地圖 -->
+        <section id="defect-map-section" class="card">
+          <div class="section-title">
+            <div class="map-title">Defect Map</div>
+            <div class="map-controls">
+              <div class="filter-group">
+                <span>Size：</span>
+                <label><input type="checkbox" id="size-S" checked> S</label>
+                <label><input type="checkbox" id="size-M" checked> M</label>
+                <label><input type="checkbox" id="size-L" checked> L</label>
+                <label><input type="checkbox" id="size-O" checked> O</label>
+              </div>
+              <div class="filter-group" id="type-filters">
+                <span>Type：</span>
+                <!-- 由 JS 動態填入 -->
+              </div>
+              <div class="filter-group">
+                <label>Offset(µm)
+                  <input id="offsetInput" type="number" min="1" max="100" value="5" class="input-xs">
+                </label>
+                <button id="applyOffset" class="btn btn-xs">套用</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 左右 40:60 版面 -->
+          <div class="map-flex">
+            <!-- 左側：Canvas -->
+            <div class="map-left">
+              <div id="defect-map-container">
+                <canvas id="defect-map-canvas"></canvas>
+                <div id="map-axes">
+                  <div class="axis x">X</div>
+                  <div class="axis y">Y</div>
+                </div>
+                <div class="map-controls map-ops">
+                  <div class="btn-group">
+                    <button id="btnMapReset" class="btn btn-xs">歸位</button>
+                    <button id="btnZoomIn" class="btn btn-xs">＋</button>
+                    <button id="btnZoomOut" class="btn btn-xs">－</button>
+                    <button id="btnBoxZoom" class="btn btn-xs">框選</button>
+                    <button id="btnClearBox" class="btn btn-xs btn-secondary">清除框</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Legend + Info -->
+            <div class="map-right">
+              <div class="map-legend" id="map-legend"></div>
+              <div id="map-info-container" class="map-info card-sub"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 右：Run Info -->
+        <aside id="run-info-block" class="card">
+          <div class="section-title compact">
+            <span>Run Info</span>
+            <div id="run-stats" class="stats-badges">
+              <span class="badge">筆數 <b>0</b></span>
+              <span class="badge">已選 <b id="sel-count">0</b></span>
+            </div>
+          </div>
+
+          <div id="run-info-filter" class="micro-filter">
+            <div class="filter-row">
+              <label class="lbl">Glass</label>
+              <!-- 只篩選 glass_id -->
+              <input id="fQuery" type="text" placeholder="輸入 glass_id 以快速篩選">
+              <button id="applyQuery" class="btn btn-xs">搜尋</button>
+              <button id="clearQuery" class="btn btn-xs btn-secondary">清空</button>
+              <div id="multi_select_recipe"></div>
+            </div>
+            <label class="right">
+              <input id="match-same-glass" type="checkbox" checked />
+              相同 glass 自動篩選
+            </label>
+          </div>
+
+          <div id="run-info-table-container" class="table-wrap">
+            <table class="table">
+              <thead></thead>
+              <tbody id="run-info-tbody"></tbody>
+            </table>
+          </div>
+
+          <div class="actions">
+            <button id="btnClearSel" class="btn btn-xs btn-secondary" title="清除選取">清除選取</button>
+          </div>
+        </aside>
+      </div>
+
+      <!-- 下排：Defect Tables（整列占滿寬度） -->
+      <section id="defect-lists" class="card">
+        <div class="section-title compact">
+          <span>Defect Tables（每筆）</span>
+          <div class="right">
+            <span class="badge">選取 <b id="dl-count">0</b> 筆</span>
+          </div>
+        </div>
+        <div id="defect-lists-container" class="defect-lists-grid"></div>
+      </section>
+    </section>
+    <!-- ===================== /AOI Defect Map root ===================== -->
+
+    <!-- ===================== AOI Density root ===================== -->
+    <section id="aoi_density-root" class="card" style="display:none;">
+      <div class="aoi_density-grid-82">
+        <!-- 左 8：Info + Charts -->
+        <div id="aoi_density-left" class="aoi_density-left">
+          <!-- Info -->
+          <section id="aoi_density-info" class="card-sub">
+            <div class="aoi_density-info-head">
+              <h2 class="t">density公式: 'defect count' / 'total glass count(hourly)'</h2>
+              <p class="sub"></p>
+            </div>
+            <div id="aoi_density-char-tabs" class="aoi_density-tabs"></div>
+          </section>
+
+          <!-- Charts -->
+          <div id="aoi_density-charts" class="aoi_density-charts card-sub">
+            <div id="aoi_density-facet"></div>
+          </div>
+        </div>
+
+        <!-- 右 2：Filter -->
+        <aside id="aoi_density-right" class="aoi_density-right card-sub">
+          <div class="filter-panel-title">篩選</div>
+
+          <!-- 日期（AOI Density 專屬區間） -->
+          <div class="filter-item">
+            <div class="filter-actions">
+              <button id="aoi_densityApply" class="btn btn-xs">套用</button>
+              <button id="aoi_densityClear" class="btn btn-xs btn-secondary">清空</button>
+            </div>
+            <div class="row inline">
+              <input type="date" id="aoi_densityStart">
+              <span class="sep">–</span>
+              <input type="date" id="aoi_densityEnd">
+            </div>
+          </div>
+
+          <div id="aoi_density-dynhosts"></div>
+          <p>----------------</p>
+        </aside>
+      </div>
+
+      <!-- Bottom row: Table + Map -->
+      <div class="aoi_density-bottom-row">
+        <!-- Table -->
+        <section id="aoi_density-table-wrap" class="card-sub">
+          <div class="table-head">Analysis Table</div>
+          <div class="table-wrap">
+            <table class="table aoi_density-table" id="aoi_density-table">
+              <thead></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Map -->
+        <section id="aoi_density-map-wrap" class="card-sub">
+          <div class="table-head">Map</div>
+          <div class="map-viewport">
+            <canvas id="aoi_density-mini-map"></canvas>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- ===================== AOI Density Spec Table (No Charts) ===================== -->
+  <section id="aoi_density-spec-table" class="card aoi-spec-root" style="display:none;">
+
+    <!-- 上方 Left:Info + Table Right:Filter -->
+    <div class="aoi_spec-grid-82">
+
+      <!-- ========== 左 8：Info + Table ========== -->
+      <div id="aoi_spec-left" class="aoi_spec-left">
+
+        <!-- Info 區 -->
+        <section id="aoi_spec-info" class="card-sub">
+          <div class="aoi_spec-info-head">
+            <h2 class="t"></h2>
+          </div>
+
+          <!-- 若之後要放子 tabs（動態 spec / 預設 spec）可放這裡 -->
+          <div id="aoi_spec-char-tabs" class="aoi_spec-tabs"></div>
+        </section>
+
+        <!-- ========== TABLE========== -->
+        
+        <div class="table-wrap">
+          <div class="table-scroll">
+            <table class="table aoi_spec-table" id="aoi_spec-table">
+              <thead></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        
+      </div>
+
+      <!-- ========== 右 2：Filter Panel ========== -->
+      <aside id="aoi_spec-right" class="aoi_spec-right card-sub">
+        <div class="spec-filter-panel-title">篩選</div>
+
+        <!-- 日期 Filter -->
+        <div class="spec-filter-item">
+          <div class="spec-filter-actions">
+            <button id="aoi_specApply" class="btn btn-xs">套用</button>
+            <button id="aoi_specClear" class="btn btn-xs btn-secondary">清空</button>
+          </div>
+          <div class="row inline">
+            <input type="date" id="aoi_specStart">
+            <span class="sep">–</span>
+            <input type="date" id="aoi_specEnd">
+          </div>
+        </div>
+
+        <!-- MultiDD / Dropdown Placeholder -->
+        <div id="aoi_spec-dynhosts"></div>
+       
+      </aside>
+    </div>
+
+  </section>
+  <!-- ===================== /AOI Density Spec Table ===================== -->
+
+  <!-- ----------Chart Tab 專用 section（預設先隱藏） -->
+  <section id="aoi_density-Chart" class="aoi-density-section aoi-density-chart-sec" style="display:none;">
+    <div class="aoi-sec-inner">
+
+      <!-- ① Title 文字 + 公告區域 -->
+      <header class="aoi-sec-header">
+        <div class="aoi-title-block">
+          <h2 class="aoi-sec-title">Trend Chart</h2>
+          <p class="aoi-sec-desc" id="aoi_density-chart-message">
+      
+          </p>
+        </div>
+        <div class="aoi-announcement" id="aoi_density-chart-announcement">
+          <!-- 例如：說明、警示、目前資料期間 -->
+        </div>
+      </header>
+
+      <!-- ===== Group 1 ===== -->
+      <section class="aoi-chart-group" data-chart-group="1">
+        <div class="aoi-chart-header">
+          <div class="aoi-chart-title">
+            <h3 class="aoi-chart-title-text">Chart Group 1</h3>
+            <p class="aoi-chart-subtitle" id="aoi_density-chart1-desc">
+              Month
+            </p>
+          </div>
+
+          <div class="aoi-chart-filter-row">
+            <div class="aoi-filter-group">
+              <label class="aoi-field-label" for="aoi_chart1-dateStart">日期</label>
+              <input type="date" id="aoi_chart1-dateStart" class="aoi-input aoi-input-date">
+              <span class="aoi-sep">~</span>
+              <input type="date" id="aoi_chart1-dateEnd" class="aoi-input aoi-input-date">
+            </div>
+
+            <div class="aoi-filter-group">
+              <label class="aoi-field-label" for="aoi_chart1-line">Line</label>
+              <select id="aoi_chart1-line" class="aoi-select">
+                <option value="">All</option>
+              </select>
+            </div>
+
+            <div class="aoi-filter-group">
+              <label class="aoi-field-label" for="aoi_chart1-pitype">Type</label>
+              <select id="aoi_chart1-pitype" class="aoi-select">
+                <option value="">All</option>
+                <!-- 可放 UPI / PISpot / SPS ... -->
+              </select>
+            </div>
+
+            <div class="aoi-filter-actions">
+              <button id="aoi_chart1-apply" class="btn btn-xs">套用</button>
+              <button id="aoi_chart1-clear" class="btn btn-xs btn-secondary">清空</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="aoi-chart-body">
+          <div id="aoi_density-chart1" class="aoi-chart-container">
+            <!-- ECharts / Plotly / Chart.js 等由 JS 掛進來 -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Group 2 ===== -->
+      <section class="aoi-chart-group" data-chart-group="2">
+        <div class="aoi-chart-header">
+          <div class="aoi-chart-title">
+            <h3 class="aoi-chart-title-text">Chart Group 2</h3>
+            <p class="aoi-chart-subtitle" id="aoi_density-chart2-desc">
+              Weekly
+            </p>
+          </div>
+
+          <div class="aoi-chart-filter-row">
+            <div class="aoi-filter-group">
+              <label class="aoi-field-label" for="aoi_chart2-dateStart">日期</label>
+              <input type="date" id="aoi_chart2-dateStart" class="aoi-input aoi-input-date">
+              <span class="aoi-sep">~</span>
+              <input type="date" id="aoi_chart2-dateEnd" class="aoi-input aoi-input-date">
+            </div>
+
+            <div class="aoi-filter-group">
+              <label class="aoi-field-label" for="aoi_chart2-line">Line</label>
+              <select id="aoi_chart2-line" class="aoi-select">
+                <option value="">All</option>
+              </select>
+            </div>
+
+            <div class="aoi-filter-group">
+              <label class="aoi-field-label" for="aoi_chart2-model">Model</label>
+              <select id="aoi_chart2-model" class="aoi-select">
+                <option value="">All</option>
+              </select>
+            </div>
+
+            <div class="aoi-filter-actions">
+              <button id="aoi_chart2-apply" class="btn btn-xs">套用</button>
+              <button id="aoi_chart2-clear" class="btn btn-xs btn-secondary">清空</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="aoi-chart-body">
+          <div id="aoi_density-chart2" class="aoi-chart-container">
+            <!-- 第二張圖 -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Group 3 ===== -->
+      <section class="aoi-chart-group" data-chart-group="3">
+        <div class="aoi-chart-header">
+          <div class="aoi-chart-title">
+            <h3 class="aoi-chart-title-text">Chart Group 3</h3>
+            <p class="aoi-chart-subtitle" id="aoi_density-chart3-desc">
+              Day
+            </p>
+          </div>
+
+          <div class="aoi-chart-filter-row">
+            <div class="aoi-filter-group">
+              <label class="aoi-field-label" for="aoi_chart3-dateStart">日期</label>
+              <input type="date" id="aoi_chart3-dateStart" class="aoi-input aoi-input-date">
+              <span class="aoi-sep">~</span>
+              <input type="date" id="aoi_chart3-dateEnd" class="aoi-input aoi-input-date">
+            </div>
+
+            <div class="aoi-filter-group">
+              <label class="aoi-field-label" for="aoi_chart3-glassType">Glass Type</label>
+              <select id="aoi_chart3-glassType" class="aoi-select">
+                <option value="">All</option>
+                <option value="CF">CF</option>
+                <option value="TFT">TFT</option>
+              </select>
+            </div>
+
+            <div class="aoi-filter-group">
+              <label class="aoi-field-label" for="aoi_chart3-sizeBucket">Size</label>
+              <select id="aoi_chart3-sizeBucket" class="aoi-select">
+                <option value="">All</option>
+                <option value="S">S</option>
+                <option value="M">M</option>
+                <option value="L">L</option>
+                <option value="O">O</option>
+              </select>
+            </div>
+
+            <div class="aoi-filter-actions">
+              <button id="aoi_chart3-apply" class="btn btn-xs">套用</button>
+              <button id="aoi_chart3-clear" class="btn btn-xs btn-secondary">清空</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="aoi-chart-body">
+          <div id="aoi_density-chart3" class="aoi-chart-container">
+            <!-- 第三張圖 -->
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </section>
+  <!-- ===================== /AOI Density root ===================== -->
+
+
+  <!-- ===================== Inspection root（獨立版面，CSS 使用 inspection.css） ===================== -->
+  <section id="inspection-root" class="card" style="display:none;">
+  <div class="inspection-grid-82">
+    <!-- 左 8：Info + Charts -->
+    <div id="inspection-left" class="inspection-left">
+      <!-- Info -->
+      <section id="inspection-info" class="card-sub">
+        <div class="inspection-info-head">
+          <h2 class="t">Inspection</h2>
+          <p class="sub"></p>
+        </div>
+        <div id="inspection-char-tabs" class="inspection-tabs"></div>
+      </section>
+
+      <!-- Charts -->
+      <div id="inspection-charts" class="card-sub">
+        <div id="inspection-facet"></div>
+      </div>
+    </div>
+
+    <!-- 右 2：Filter -->
+    <aside id="inspection-right" class="card-sub">
+      <div class="filter-panel-title">篩選</div>
+
+      <!-- 日期 -->
+      <div class="filter-item">
+        <div class="filter-actions">
+          <button id="inspectionApply" class="btn btn-xs">套用</button>
+          <button id="inspectionClear" class="btn btn-xs btn-secondary">清空</button>
+        </div>
+        <div class="row inline">
+          <input type="date" id="inspectionStart">
+          <span class="sep">-</span>
+          <input type="date" id="inspectionEnd">
+        </div>
+      </div>
+
+      <div id="inspection-dynhosts"></div>
+      <p>----------------</p>
+    </aside>
+  </div>
+
+  <!-- Bottom row: Table + Map -->
+  <div class="inspection-bottom-row">
+    <!-- Table -->
+    <section id="inspection-table-wrap" class="card-sub">
+      <div class="table-head">Inspection Table</div>
+      <div class="table-wrap">
+        <table class="table inspection-table" id="inspection-table">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Map -->
+    <section id="inspection-map-wrap" class="card-sub">
+      <div class="table-head">Map</div>
+      <div class="map-viewport">
+        <canvas id="inspection-mini-map"></canvas>
+      </div>
+    </section>
+  </div>
+  </section>
+  <!-- ===================== /Inspection root ===================== -->
+
+
+  <!-- ===================== Inspection Spec Table (No Charts) ===================== -->
+  <section id="inspection-spec-table" class="card inspection-spec-root" style="display:none;">
+
+    <div class="inspection_spec-grid-82">
+      <!-- 左 8：Info + Table -->
+      <div id="inspection_spec-left" class="inspection_spec-left">
+
+        <!-- Info 區 -->
+        <section id="inspection_spec-info" class="card-sub">
+          <div class="inspection_spec-info-head">
+            <h2 class="t"></h2>
+          </div>
+          <div id="inspection_spec-char-tabs" class="inspection_spec-tabs"></div>
+        </section>
+
+        <!-- Spec Table -->
+        <div class="table-wrap">
+          <div class="table-scroll">
+            <table class="table inspection_spec-table" id="inspection_spec-table">
+              <thead></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右 2：Filter Panel -->
+      <aside id="inspection_spec-right" class="inspection_spec-right card-sub">
+        <div class="inspection-spec-filter-panel-title">篩選</div>
+
+        <div class="inspection-spec-filter-item">
+          <div class="inspection-spec-filter-actions">
+            <button id="inspection_specApply" class="btn btn-xs">套用</button>
+            <button id="inspection_specClear" class="btn btn-xs btn-secondary">清空</button>
+          </div>
+          <div class="row inline">
+            <input type="date" id="inspection_specStart">
+            <span class="sep">-</span>
+            <input type="date" id="inspection_specEnd">
+          </div>
+        </div>
+
+        <div id="inspection_spec-dynhosts"></div>
+      </aside>
+    </div>
+
+  </section>
+  <!-- ===================== /Inspection Spec Table ===================== -->
+
+  <!-- ===================== Inspection Chart (Trend) ===================== -->
+  <section id="inspection-Chart" class="inspection-section inspection-chart-sec" style="display:none;">
+    <div class="inspection-sec-inner">
+
+      <!-- 標題 + 公告 
+      <header class="inspection-sec-header">
+        <div class="inspection-title-block">
+          <h2 class="inspection-sec-title">Inspection Trend Chart</h2>
+          <p class="inspection-sec-desc" id="inspection-chart-message"></p>
+        </div>
+        <div class="inspection-announcement" id="inspection-chart-announcement"></div>
+      </header>-->
+
+      <!-- ===== Group 1：Month ===== -->
+      <section class="inspection-chart-group" data-chart-group="1">
+        <div class="inspection-chart-header">
+          <div class="inspection-chart-title">
+            <h3 class="inspection-chart-title-text">月份趨勢</h3>
+            <p class="inspection-chart-subtitle" id="inspection-chart1-desc">Month</p>
+          </div>
+
+          <div class="inspection-chart-filter-row">
+            <!-- 月份篩選：type="month" -->
+            <div class="inspection-filter-group">
+              <label class="inspection-field-label" for="inspection_chart1-monthStart">月份</label>
+              <input type="month" id="inspection_chart1-monthStart" class="inspection-input inspection-input-month">
+              <span class="inspection-sep">~</span>
+              <input type="month" id="inspection_chart1-monthEnd" class="inspection-input inspection-input-month">
+              <button id="inspection_chart1-apply" class="btn btn-xs">套用</button>
+              <button id="inspection_chart1-clear" class="btn btn-xs btn-secondary">清空</button>
+            
+            </div>
+
+
+          </div>
+        </div>
+
+        <div class="inspection-chart-body">
+          <div id="inspection-chart1" class="inspection-chart-container"></div>
+        </div>
+      </section>
+
+      <!-- ===== Group 2：Weekly ===== -->
+      <section class="inspection-chart-group" data-chart-group="2">
+        <div class="inspection-chart-header">
+          <div class="inspection-chart-title">
+            <h3 class="inspection-chart-title-text">週別趨勢</h3>
+            <p class="inspection-chart-subtitle" id="inspection-chart2-desc">Weekly</p>
+          </div>
+
+          <div class="inspection-chart-filter-row">
+            <!-- 週別篩選：type="week" -->
+            <div class="inspection-filter-group">
+              <label class="inspection-field-label" for="inspection_chart2-weekStart">週別</label>
+              <input type="week" id="inspection_chart2-weekStart" class="inspection-input inspection-input-week">
+              <span class="inspection-sep">~</span>
+              <input type="week" id="inspection_chart2-weekEnd" class="inspection-input inspection-input-week">
+              <button id="inspection_chart2-apply" class="btn btn-xs">套用</button>
+              <button id="inspection_chart2-clear" class="btn btn-xs btn-secondary">清空</button>
+            
+            </div>
+
+            
+
+          </div>
+        </div>
+
+        <div class="inspection-chart-body">
+          <div id="inspection-chart2" class="inspection-chart-container"></div>
+        </div>
+      </section>
+
+      <!-- ===== Group 3：Day / Size / Side ===== -->
+      <section class="inspection-chart-group" data-chart-group="3">
+        <div class="inspection-chart-header">
+          <div class="inspection-chart-title">
+            <h3 class="inspection-chart-title-text">每日趨勢</h3>
+            <p class="inspection-chart-subtitle" id="inspection-chart3-desc">Day</p>
+          </div>
+
+          <div class="inspection-chart-filter-row">
+            <!-- 日篩選：維持原來 date -->
+            <div class="inspection-filter-group">
+              <label class="inspection-field-label" for="inspection_chart3-dateStart">日期</label>
+              <input type="date" id="inspection_chart3-dateStart" class="inspection-input inspection-input-date">
+              <span class="inspection-sep">~</span>
+              <input type="date" id="inspection_chart3-dateEnd" class="inspection-input inspection-input-date">
+              <button id="inspection_chart3-apply" class="btn btn-xs">套用</button>
+              <button id="inspection_chart3-clear" class="btn btn-xs btn-secondary">清空</button>
+            
+            </div>
+
+            
+          </div>
+        </div>
+
+        <div class="inspection-chart-body">
+          <div id="inspection-chart3" class="inspection-chart-container"></div>
+        </div>
+      </section>
+
+    </div>
+  </section>
+  <!-- ===================== /Inspection Chart ===================== -->
+
+
+
+
+
+
+    <!-- ===================== AOI CAPA =================================== -->
+    <section id="aoi_capa-root" class="card" style="display:none;">
+      <!-- 上半：Chart + Filter（8:2） -->
+      <div class="aoi_capa-grid-82">
+        <div id="aoi_capa-left" class="aoi_capa-left">
+          <section id="aoi_capa-info" class="card-sub">
+            <div class="aoi_capa-info-head">
+              <h2 class="t">CAPA</h2>
+              <p class="sub"></p>
+            </div>
+            <div id="aoi_capa-char-tabs" class="aoi_capa-tabs"></div>
+          </section>
+
+          <!-- Charts 區 -->
+          <section id="aoi_capa-charts" class="aoi_capa-charts card-sub">
+            <div id="aoi_capa-facet"></div>
+          </section>
+        </div>
+
+        <!-- 右側：Filter 區 -->
+        <aside id="aoi_capa-right" class="aoi_capa-right card-sub">
+          <!-- 上：4（日期 + MultiDD） -->
+          <div class="aoi_capa-right-top">
+            <div class="aoi_capa-filter-title">篩選</div>
+        
+            <div class="aoi_capa-filter-item">
+              <div class="aoi_capa-filter-actions">
+                <button id="aoi_capaApply" class="btn btn-xs">套用</button>
+                <button id="aoi_capaClear" class="btn btn-xs btn-secondary">清空</button>
+              </div>
+              <div class="row inline">
+                <input type="date" id="aoi_capaStart">
+                <span class="sep">–</span>
+                <input type="date" id="aoi_capaEnd">
+              </div>
+            </div>
+        
+            <div id="aoi_capa-dynhosts"></div>
+          </div>
+        
+        
+          <div class="aoi_capa-right-bottom">
+            <!-- AOI Target / SPEC 控制表格 -->
+            <div class="aoi_capa-rtarget">
+              <div class="aoi_capa-rtarget-head">
+                <span class="title">AOI Target / SPEC</span>
+                <div class="actions">
+                  <button id="aoi_capa-rt-edit" class="btn btn-xs">編輯</button>
+                  <button id="aoi_capa-rt-apply" class="btn btn-xs btn-primary" style="display:none;">套用</button>
+                  <button id="aoi_capa-rt-cancel" class="btn btn-xs btn-secondary" style="display:none;">取消</button>
+                </div>
+              </div>
+              <div class="aoi_capa-rtarget-body">
+                <table class="aoi_capa-rtarget-table">
+                  <thead>
+                    <tr>
+                      <th>AOI</th>
+                      <th>Target_glass</th>
+                      <th>SPEC(%)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <!-- 下半：Table(8) + Day Info(2) -->
+      <section id="aoi_capa-table-wrap" class="card-sub aoi_capa-table-section">
+        <div class="aoi_capa-table-grid">
+          <!-- 左：Table 佔 8 -->
+          <div class="aoi_capa-table-main">
+            <div class="table-head">
+              <span class="table-title">CAPA Table</span>
+              <!-- <div class="aoi_capa-table-head-right">...</div> -->
+            </div>
+            <div class="table-wrap">
+              <table class="table aoi_capa-table" id="aoi_capa-table">
+                <thead></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <aside id="aoi_capa-day-detail" class="aoi_capa-day-detail">
+            <div class="detail-head">
+              <span class="detail-title">Day Info</span>
+              <div class="detail-actions">
+                <button id="capa-detail-edit" class="btn btn-xs">編輯</button>
+                <button id="capa-detail-save" class="btn btn-xs btn-primary" style="display:none;">儲存</button>
+                <button id="capa-detail-cancel" class="btn btn-xs btn-secondary" style="display:none;">取消</button>
+              </div>
+            </div>
+
+            <table class="detail-table">
+              <tbody>
+                <tr>
+                  <th>Target Count</th>
+                  <td data-field="target_count"></td>
+                </tr>
+                <tr>
+                  <th>Spec</th>
+                  <td data-field="spec"></td>
+                </tr>
+                <tr>
+                  <th>Comment</th>
+                  <td data-field="comment"></td>
+                </tr>
+                <tr>
+                  <th>Editor</th>
+                  <td data-field="editor"></td>
+                </tr>
+              </tbody>
+            </table>
+          </aside>
+        </div>
+      </section>
+
+    <!-- ===================== / AOI CAPA =================================== -->
+
+  </main>
+</div>
+
+<div class="toast"></div>
+
+
+
+
+
+</body>
+</html>
