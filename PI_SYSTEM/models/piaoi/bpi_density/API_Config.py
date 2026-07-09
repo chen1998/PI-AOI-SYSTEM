@@ -1435,6 +1435,8 @@ class API_Config:
                         "key": "offset_um",
                         "values": self.common_same_point_offsets[:],
                         "cascade": True,
+                        "selection_mode": "single",
+                        "default_value": 20,
                     },
                     "defect size": {
                         "key": "defect_size",
@@ -1455,13 +1457,59 @@ class API_Config:
 
                 "recipe_defect_default_rules": [],
 
+                "denominator_identity_cols": [
+                    "glass_id",
+                    "tab",
+                    "bpi_aoi",
+                    "bpi_recipe_id",
+                    "bpi_scan_time",
+                    "api_aoi",
+                    "api_recipe_id",
+                    "api_scan_time",
+                ],
+
+                "summary_row_identity_cols": [
+                    "api_aoi",
+                    "model",
+                    "glass_side",
+                    "recipe_id",
+                ],
+
+                "metric_definition": {
+                    "rows": "count distinct(api_aoi, model, glass_side, api_recipe_id)",
+                    "defect_cnt": "same_point_count = sum(matched_pair_count)",
+                    "total_glass_cnt": "pair_count = count distinct glass pair under selected offset_um",
+                    "density": "same_point_avg = same_point_count / pair_count",
+                    "day_boundary": "07:30~next day 07:30",
+                    "denominator_policy": "defect_size does not shrink pair_count; offset_um is single-select",
+                },
+
+                "summary_labels": {
+                    "rows": {
+                        "title": "Groups",
+                        "subtitle": "api_aoi + model + side + recipe",
+                    },
+                    "defect_cnt": {
+                        "title": "Same Point Count",
+                        "subtitle": "sum matched_pair_count",
+                    },
+                    "total_glass_cnt": {
+                        "title": "Pair Count",
+                        "subtitle": "selected offset",
+                    },
+                    "density": {
+                        "title": "Avg Same Point",
+                        "subtitle": "same point / pair",
+                    },
+                },
+
                 "table_columns": {
                     "glass_side": "side",
                     "model": "Model",
                     "offset_um": "offset",
                     "defect_cnt": "same point count",
-                    "total_glass_cnt": "glass count",
-                    "density": "same point density",
+                    "total_glass_cnt": "pair count",
+                    "density": "avg same point / pair",
                     "day_count": "days",
                     "hour_count": "hours",
                 },
@@ -1471,8 +1519,8 @@ class API_Config:
                     "model": "Model",
                     "offset_um": "offset",
                     "defect_cnt": "same point count",
-                    "total_glass_cnt": "glass count",
-                    "density": "same point density",
+                    "total_glass_cnt": "pair count",
+                    "density": "avg same point / pair",
                     "day_count": "days",
                     "hour_count": "hours",
                 },

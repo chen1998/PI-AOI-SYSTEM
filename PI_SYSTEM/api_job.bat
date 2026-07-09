@@ -1,7 +1,7 @@
 @echo off
 setlocal
 
-cd /d D:\A0_Project\PI_SYSTEM\
+cd /d "%~dp0"
 
 if not exist api_log mkdir api_log
 

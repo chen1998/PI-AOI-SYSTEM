@@ -91,6 +91,10 @@ class DensityAvgConfig:
     table_columns: Dict[str, str] = field(default_factory=dict)
     download_columns: Dict[str, str] = field(default_factory=dict)
     recipe_defect_default_rules: List[Dict[str, Any]] = field(default_factory=list)
+    denominator_identity_cols: List[str] = field(default_factory=list)
+    summary_row_identity_cols: List[str] = field(default_factory=list)
+    metric_definition: Dict[str, Any] = field(default_factory=dict)
+    summary_labels: Dict[str, Dict[str, str]] = field(default_factory=dict)
 
     time_semantic: str = ""
     day_boundary: str = "07:30"
@@ -182,6 +186,10 @@ def _resolve_avg_config(system: str) -> DensityAvgConfig:
             table_columns=dict(avg_cfg.get("table_columns") or {}),
             download_columns=dict(avg_cfg.get("download_columns") or {}),
             recipe_defect_default_rules=list(avg_cfg.get("recipe_defect_default_rules") or []),
+            denominator_identity_cols=list(avg_cfg.get("denominator_identity_cols") or []),
+            summary_row_identity_cols=list(avg_cfg.get("summary_row_identity_cols") or []),
+            metric_definition=dict(avg_cfg.get("metric_definition") or {}),
+            summary_labels=dict(avg_cfg.get("summary_labels") or {}),
             time_semantic=str(avg_cfg.get("time_semantic") or "pi_hour_label_30min"),
             day_boundary=str(avg_cfg.get("day_boundary") or "07:30"),
         )
@@ -212,6 +220,10 @@ def _resolve_avg_config(system: str) -> DensityAvgConfig:
             table_columns=dict(avg_cfg.get("table_columns") or {}),
             download_columns=dict(avg_cfg.get("download_columns") or {}),
             recipe_defect_default_rules=list(avg_cfg.get("recipe_defect_default_rules") or []),
+            denominator_identity_cols=list(avg_cfg.get("denominator_identity_cols") or []),
+            summary_row_identity_cols=list(avg_cfg.get("summary_row_identity_cols") or []),
+            metric_definition=dict(avg_cfg.get("metric_definition") or {}),
+            summary_labels=dict(avg_cfg.get("summary_labels") or {}),
             time_semantic=str(avg_cfg.get("time_semantic") or "scan_hour"),
             day_boundary=str(avg_cfg.get("day_boundary") or "07:30"),
         )
@@ -249,6 +261,10 @@ def _resolve_avg_config(system: str) -> DensityAvgConfig:
             table_columns=dict(avg_cfg.get("table_columns") or {}),
             download_columns=dict(avg_cfg.get("download_columns") or {}),
             recipe_defect_default_rules=list(avg_cfg.get("recipe_defect_default_rules") or []),
+            denominator_identity_cols=list(avg_cfg.get("denominator_identity_cols") or []),
+            summary_row_identity_cols=list(avg_cfg.get("summary_row_identity_cols") or []),
+            metric_definition=dict(avg_cfg.get("metric_definition") or {}),
+            summary_labels=dict(avg_cfg.get("summary_labels") or {}),
             time_semantic=str(avg_cfg.get("time_semantic") or "scan_hour"),
             day_boundary=str(avg_cfg.get("day_boundary") or "07:30"),
         )
@@ -290,6 +306,10 @@ def _resolve_avg_config(system: str) -> DensityAvgConfig:
             table_columns=dict(avg_cfg.get("table_columns") or {}),
             download_columns=dict(avg_cfg.get("download_columns") or {}),
             recipe_defect_default_rules=list(avg_cfg.get("recipe_defect_default_rules") or []),
+            denominator_identity_cols=list(avg_cfg.get("denominator_identity_cols") or []),
+            summary_row_identity_cols=list(avg_cfg.get("summary_row_identity_cols") or []),
+            metric_definition=dict(avg_cfg.get("metric_definition") or {}),
+            summary_labels=dict(avg_cfg.get("summary_labels") or {}),
             time_semantic=str(avg_cfg.get("time_semantic") or "pi_hour_label_30min"),
             day_boundary=str(avg_cfg.get("day_boundary") or "07:30"),
         )
@@ -915,7 +935,7 @@ def _denominator_identity_cols(df: pd.DataFrame, cfg: DensityAvgConfig) -> List[
     if "__hour_key" not in cols:
         cols.append("__hour_key")
 
-    possible_identity = [
+    possible_identity = cfg.denominator_identity_cols or [
         "line_id",
         "aoi",
         "cassette_id",
@@ -1079,10 +1099,46 @@ def _csv_filename(system: str, start_date: str, end_date: str) -> str:
     return f"{_normalize_system(system)}_density_avg_{s}_{e}.csv"
 
 
-def _summary_cards(df: pd.DataFrame) -> Dict[str, Any]:
+def _summary_rows_from_source(
+    df: pd.DataFrame,
+    cfg: DensityAvgConfig,
+    filters: Dict[str, List[str]],
+) -> Optional[int]:
     if df is None or df.empty:
+        return 0
+
+    cols = [c for c in (cfg.summary_row_identity_cols or []) if c in df.columns]
+
+    if not cols:
+        return None
+
+    row_filters = {
+        k: v
+        for k, v in (filters or {}).items()
+        if k not in ("defect_size", "adc_def_code")
+    }
+    sub = _apply_filters(df, row_filters, ignore_missing=True)
+
+    if sub is None or sub.empty:
+        return 0
+
+    return int(sub[cols].drop_duplicates().shape[0])
+
+
+def _summary_cards(
+    df: pd.DataFrame,
+    *,
+    cfg: Optional[DensityAvgConfig] = None,
+    source_df: Optional[pd.DataFrame] = None,
+    filters: Optional[Dict[str, List[str]]] = None,
+) -> Dict[str, Any]:
+    if df is None or df.empty:
+        row_count = 0
+        if cfg is not None and source_df is not None:
+            row_count = _summary_rows_from_source(source_df, cfg, filters or {}) or 0
+
         return {
-            "rows": 0,
+            "rows": row_count,
             "defect_cnt": 0,
             "total_glass_cnt": 0,
             "density": 0,
@@ -1096,9 +1152,13 @@ def _summary_cards(df: pd.DataFrame) -> Dict[str, Any]:
 
     day_count = int(pd.to_numeric(df.get("day_count", 0), errors="coerce").fillna(0).max()) if "day_count" in df.columns else 0
     hour_count = int(pd.to_numeric(df.get("hour_count", 0), errors="coerce").fillna(0).max()) if "hour_count" in df.columns else 0
+    row_count = int(len(df))
+
+    if cfg is not None and source_df is not None:
+        row_count = _summary_rows_from_source(source_df, cfg, filters or {}) or row_count
 
     return {
-        "rows": int(len(df)),
+        "rows": row_count,
         "defect_cnt": defect,
         "total_glass_cnt": glass,
         "density": density,
@@ -1170,6 +1230,10 @@ async def density_avg_options(req: DensityAvgRequest):
                 "table_columns": cfg.table_columns,
                 "download_columns": cfg.download_columns,
                 "recipe_defect_default_rules": cfg.recipe_defect_default_rules,
+                "denominator_identity_cols": cfg.denominator_identity_cols,
+                "summary_row_identity_cols": cfg.summary_row_identity_cols,
+                "metric_definition": cfg.metric_definition,
+                "summary_labels": cfg.summary_labels,
             },
             "Meta": meta,
         }
@@ -1209,10 +1273,10 @@ async def preview_density_avg(req: DensityAvgRequest):
             "preview_count": int(len(preview_df)),
             "total_count": total_count,
             "count": int(len(preview_df)),
-            "summary": _summary_cards(result_df),
+            "summary": _summary_cards(result_df, cfg=cfg, source_df=df, filters=filters),
             "filterOptionDict": option_dict,
             "suggestedFilters": suggested,
-            "metric_definition": {
+            "metric_definition": cfg.metric_definition or {
                 "density": "sum(defect_cnt) / sum(total_glass_cnt)",
                 "day_boundary": "07:30~next day 07:30",
                 "denominator_policy": "defect_size and adc_def_code do not shrink total_glass_cnt",

@@ -1,7 +1,9 @@
 # %%
 import pandas as pd
 import logging
+import os
 from sqlalchemy import create_engine, text, inspect
+from sqlalchemy.engine import URL
 from typing import List, Any
 from sqlalchemy.exc import SQLAlchemyError
 import pymysql
@@ -33,10 +35,20 @@ def _assert_safe_identifier(name: str, what: str = "identifier") -> str:
 class  MySQLConnetFunc:
     def __init__(self, dbname):
         self.db = dbname
-        host = "10.97.142.217"
-        username = "l6a01_user"
-        password = "l6a01$user"
-        self.engine = create_engine(f"mysql+pymysql://{username}:{password}@{host}/{dbname}")
+        host = os.getenv("PI_MYSQL_HOST", "10.97.142.217")
+        port_raw = os.getenv("PI_MYSQL_PORT", "")
+        username = os.getenv("PI_MYSQL_USER", "l6a01_user")
+        password = os.getenv("PI_MYSQL_PASSWORD", "l6a01$user")
+        port = int(port_raw) if port_raw else None
+        url = URL.create(
+            "mysql+pymysql",
+            username=username,
+            password=password,
+            host=host,
+            port=port,
+            database=dbname,
+        )
+        self.engine = create_engine(url)
 
     def list_tables(self):
         try:

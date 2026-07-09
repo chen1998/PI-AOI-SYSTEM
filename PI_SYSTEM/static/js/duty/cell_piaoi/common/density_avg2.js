@@ -333,6 +333,37 @@
     return {};
   }
 
+  function isSingleSelectFilter(key) {
+    const cfg = getConfigForKey(key);
+    const mode = String(cfg.selection_mode || cfg.select_mode || "").toLowerCase();
+
+    return (
+      mode === "single" ||
+      cfg.single === true ||
+      cfg.multiple === false
+    );
+  }
+
+  function normalizeSelectionForKey(key, selected, options) {
+    const opts = cleanArr(options);
+    let sel = cleanArr(selected).filter(v => opts.includes(v));
+
+    if (!isSingleSelectFilter(key)) return sel;
+    if (!opts.length) return [];
+
+    const cfg = getConfigForKey(key);
+    const rawDefault = cfg.default_value != null ? cfg.default_value : cfg.default;
+    const defaults = Array.isArray(cfg.default_values)
+      ? cleanArr(cfg.default_values)
+      : cleanArr(rawDefault != null ? [rawDefault] : []);
+    const defaultValue = defaults.find(v => opts.includes(v));
+
+    if (sel.length > 1) return [sel[sel.length - 1]];
+    if (sel.length === 1) return [sel[0]];
+
+    return [defaultValue || opts[0]];
+  }
+
   // ============================================================
   // Filters
   // ============================================================
@@ -364,6 +395,11 @@
       if (!selected.length) return;
 
       // 全選視為沒有篩選。
+      if (isSingleSelectFilter(key)) {
+        out[key] = normalizeSelectionForKey(key, selected, options);
+        return;
+      }
+
       const isAllSelected =
         selected.length === options.length &&
         selected.every(v => options.includes(v));
@@ -578,6 +614,8 @@
         selected = opts.slice();
       }
   
+      selected = normalizeSelectionForKey(key, selected, opts);
+
       let wrap = state.mdd[key];
   
       // 第一次建立
@@ -587,8 +625,19 @@
           selectId,
           options: opts,
           title: label,
-          onChange: () => {
+          onChange: (selectedValues) => {
             if (state.suppressFilterChange) return;
+
+            const currentOptions = state.mdd?.[key]?.options || opts;
+            const normalized = normalizeSelectionForKey(key, selectedValues, currentOptions);
+            if (!arrSame(selectedValues, normalized)) {
+              state.suppressFilterChange = true;
+              try {
+                mdd.setSelected?.(normalized);
+              } finally {
+                state.suppressFilterChange = false;
+              }
+            }
   
             state.currentPage = 1;
             updateFilterCount();
@@ -751,12 +800,27 @@
     if (!host) return;
 
     const s = summary || {};
+    const labels = state.config?.summary_labels || {};
+
+    function labelOf(key, fallbackTitle, fallbackSubtitle) {
+      const cfg = labels?.[key] || {};
+
+      return {
+        title: cfg.title || fallbackTitle,
+        subtitle: cfg.subtitle || fallbackSubtitle
+      };
+    }
+
+    const rowLabel = labelOf("rows", "Rows", "preview result rows");
+    const defectLabel = labelOf("defect_cnt", "Defect Count", "sum");
+    const glassLabel = labelOf("total_glass_cnt", "Total Glass", "sum");
+    const densityLabel = labelOf("density", "Density", "defect / glass");
 
     const items = [
-      { k: "Rows", v: fmtNum(s.rows), u: "preview result rows" },
-      { k: "Defect Count", v: fmtNum(s.defect_cnt), u: "sum" },
-      { k: "Total Glass", v: fmtNum(s.total_glass_cnt), u: "sum" },
-      { k: "Density", v: fmtDensity(s.density), u: "defect / glass" }
+      { k: rowLabel.title, v: fmtNum(s.rows), u: rowLabel.subtitle },
+      { k: defectLabel.title, v: fmtNum(s.defect_cnt), u: defectLabel.subtitle },
+      { k: glassLabel.title, v: fmtNum(s.total_glass_cnt), u: glassLabel.subtitle },
+      { k: densityLabel.title, v: fmtDensity(s.density), u: densityLabel.subtitle }
     ];
 
     host.innerHTML = "";

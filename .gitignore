@@ -8,3 +8,7 @@ __pycache__/
 
 # log
 *.log
+
+# local mock database
+.mock_mysql/
+mock_mysql/

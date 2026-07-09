@@ -540,11 +540,21 @@ logger.info("static_path=%s", static_path)
 # =============================================================================
 # CORS
 # =============================================================================
-origins = ["http://10.97.142.217:8204"]
+origins = [
+    "http://localhost:8204",
+    "http://127.0.0.1:8204",
+]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
+    allow_origin_regex=(
+        r"^http://("
+        r"10\.\d+\.\d+\.\d+|"
+        r"192\.168\.\d+\.\d+|"
+        r"172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+"
+        r"):8204$"
+    ),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
