@@ -1,0 +1,1433 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PI AOI 分析</title>
+
+  <script>
+    // BACKEND API
+    window.API_BASE  = "http://10.97.142.217:8104";
+    // 影像端點
+    window.IMG_HOST = "http://10.97.139.98:1454";
+  </script>
+
+  <!-- 全域共用 CSS -->
+  <link rel="stylesheet" href="/static/css/common/base1.css" />
+  <link rel="stylesheet" href="/static/css/common/l6a_track_sidebar.css" />
+
+  <!-- ///全域共用 CSS -->
+  
+ 
+  <!-- ===== JS ===== -->
+
+  <!-- 值班->Cell 值班 -> PIAOI 共用：echarts + sidebar -->
+  <script src="/static/js/common/echarts.min.js" defer></script>
+  <script src="/static/js/common/l6a_track_sidebar.js" defer></script>
+
+  <!-- 值班->Cell 值班 -> PIAOI 共用：分頁切換 + 共用分頁 -->
+  <script src="/static/js/duty/cell_piaoi/common/system_tab.js" defer></script>
+  <script src="/static/js/duty/cell_piaoi/common/density_csv.js" defer></script>
+  <script src="/static/js/duty/cell_piaoi/common/density_avg2.js" defer></script>
+  
+
+  <!-- /// ===== JS ===== -->
+
+  <!-- 值班->Cell 值班 ->  Cell aoi to Array 共用 CSS -->
+  <link rel="stylesheet" href="/static/css/duty/cell_aoi_to_array/cell_aoi_to_array.css" />
+  <!--<link rel="stylesheet" href="/static/css/duty/cell_aoi_to_array/cell_aoi_to_array_base.css">
+  <link rel="stylesheet" href="/static/css/duty/cell_aoi_to_array/cell_aoi_to_array_table.css">
+  <link rel="stylesheet" href="/static/css/duty/cell_aoi_to_array/cell_aoi_to_array_sheet_map.css">-->
+  
+
+  <!-- 值班->Cell 值班 -> PIAOI 共用 CSS -->
+  <link rel="stylesheet" href="/static/css/duty/cell_piaoi/common/tabs.css" />
+  <link rel="stylesheet" href="/static/css/duty/cell_piaoi/common/density_csv1.css" />
+  <link rel="stylesheet" href="/static/css/duty/cell_piaoi/common/density_avg.css" />
+  
+  <!-- 值班->Cell 值班 -> PI AOI工具 - CSS -->
+    <!-- AOI overlay map - CSS -->
+    <link rel="stylesheet" href="/static/css/duty/cell_piaoi/ol_defect_map/ol_defect_map.css">
+    <link rel="stylesheet" href="/static/css/duty/cell_piaoi/ol_defect_map/ol_defect_map_tables.css">
+    <link rel="stylesheet" href="/static/css/duty/cell_piaoi/ol_defect_map/ol_defect_map_filters.css">
+    <link rel="stylesheet" href="/static/css/duty/cell_piaoi/ol_defect_map/ol_defect_map_image.css">
+
+    <!-- AOI BPI Area - CSS -->
+    <link rel="stylesheet" href="/static/css/duty/cell_piaoi/bpi_area/common.css">
+
+    <!-- AOI BPI Area - Density CSS -->
+    <link rel="stylesheet" href="/static/css/duty/cell_piaoi/bpi_area/bpi_density1.css" />
+    <link rel="stylesheet" href="/static/css/duty/cell_piaoi/bpi_area/table_tab.css">
+    
+    <!-- AOI BPI Area - same point CSS -->
+    <link rel="stylesheet" href="/static/css/duty/cell_piaoi/bpi_area/bpi_same_point1.css">
+
+    <!-- AOI Density CSS -->
+    <link rel="stylesheet" href="/static/css/duty/cell_piaoi/aoi_density/aoi_density2.css" />
+    <link rel="stylesheet" href="/static/css/duty/cell_piaoi/aoi_density/table_tab2.css">
+    <link rel="stylesheet" href="/static/css/duty/cell_piaoi/aoi_density/trend_chart2.css">
+
+    <!-- AOI Inspection Density CSS -->
+    <link rel="stylesheet" href="static/css/duty/cell_piaoi/aoi_inspection_density/inspection2.css" />
+    <link rel="stylesheet" href="/static/css/duty/cell_piaoi/aoi_inspection_density/table_tab.css">
+    <link rel="stylesheet" href="/static/css/duty/cell_piaoi/aoi_inspection_density/trend_chart1.css">
+
+    <!-- AOI Capa CSS -->
+    <link rel="stylesheet" href="/static/css/duty/cell_piaoi/aoi_capa/capa2.css" />
+    <link rel="stylesheet" href="/static/css/duty/cell_piaoi/aoi_capa/table_tab.css" />
+  <!--/// 值班->Cell 值班 -> PI AOI工具 - CSS -->
+
+  
+
+</head>
+<body>
+  <div id="l6a-track-shell" class="l6a-track-shell l6a-track-sidebar-open">
+
+    <aside id="l6a-track-sidebar" class="l6a-track-sidebar">
+      <div id="l6a-track-sidebar-inner" class="l6a-track-sidebar-inner"></div>
+    </aside>
+
+    <div id="l6a-track-content" class="l6a-track-content">
+      
+      <!-- ===================== Cell AOI To Array / 來料檢 App ===================== -->
+      <section id="cell-aoi-to-array" class="l6a-track-page cell-aoi-to-array-page" data-l6a-page="incoming-inspection" style="display:none;">
+        <div class="cell-aoi-to-array-shell">
+
+          <!-- TOP 區域 -->
+          <header class="cell-aoi-to-array-top card">
+            <div class="cell-aoi-to-array-top-left">
+              <h1 class="cell-aoi-to-array-title">Cell值班</h1>
+              <div class="cell-aoi-to-array-subtitle">Incoming Inspection / Cell AOI Sampling Compare</div>
+            </div>
+
+            <div class="cell-aoi-to-array-top-right">
+              <span id="cell-aoi-to-array-active-badge" class="cell-aoi-to-array-status-badge">-</span>
+            </div>
+          </header>
+
+          <!-- Tab 類別分頁區域：由 JS 插入 -->
+          <section class="cell-aoi-to-array-tabs-card card">
+            <div id="cell-aoi-to-array-category-tabs" class="cell-aoi-to-array-category-tabs"></div>
+            <div id="cell-aoi-to-array-feature-tabs" class="cell-aoi-to-array-feature-tabs"></div>
+          </section>
+
+          <!-- 內容根節點：根據功能分頁由 JS 控制 -->
+          <main id="cell-aoi-to-array-content" class="cell-aoi-to-array-content">
+
+            <!-- 共用功能頁：AOI抽檢比對 / Inspection抽檢比對 -->
+            <section id="cell-aoi-to-array-compare-section" class="cell-aoi-to-array-section" style="display:none;">
+
+              <!-- 說明文字區域 -->
+              <section class="cell-aoi-to-array-info-card card">
+                <div id="cell-aoi-to-array-info-left" class="cell-aoi-to-array-info-left"></div>
+                <div id="cell-aoi-to-array-info-right" class="cell-aoi-to-array-info-right"></div>
+              </section>
+
+              <!-- 篩選區域 -->
+              <section class="cell-aoi-to-array-filter-card card">
+                <div class="cell-aoi-to-array-filter-row">
+
+                  <div class="cell-aoi-to-array-filter-group cell-aoi-to-array-filter-date">
+                    <label class="cell-aoi-to-array-filter-label">時間範圍</label>
+                    <div class="cell-aoi-to-array-date-range">
+                      <input id="cell-aoi-to-array-start-date" type="date">
+                      <span class="cell-aoi-to-array-date-sep">～</span>
+                      <input id="cell-aoi-to-array-end-date" type="date">
+                    </div>
+                  </div>
+
+                  <div class="cell-aoi-to-array-filter-group">
+                    <label class="cell-aoi-to-array-filter-label">line別</label>
+                    <select id="cell-aoi-to-array-tool-select" class="cell-aoi-to-array-select"></select>
+                  </div>
+
+                  <div class="cell-aoi-to-array-filter-group cell-aoi-to-array-sheet-group">
+                    <label class="cell-aoi-to-array-filter-label">SHEET查詢</label>
+                    <div class="cell-aoi-to-array-sheet-search">
+                      <div id="cell-aoi-to-array-sheet-type-radios" class="cell-aoi-to-array-radio-row"></div>
+                      <input id="cell-aoi-to-array-sheet-input" type="text" placeholder="e.g. AE1UA504MY">
+                    </div>
+                  </div>
+                  
+                  <div class="cell-aoi-to-array-filter-group cell-aoi-to-array-csv-group">
+                    <label class="cell-aoi-to-array-filter-label">SHEET批次篩選</label>
+                    <div class="cell-aoi-to-array-csv-upload">
+                      <input
+                        id="cell-aoi-to-array-sheet-csv-input"
+                        type="file"
+                        accept=".csv,text/csv"
+                        style="display:none;"
+                      />
+
+                      <button
+                        id="cell-aoi-to-array-sheet-csv-sample-btn"
+                        type="button"
+                        class="btn cell-aoi-to-array-csv-sample-btn"
+                      >
+                        範例CSV
+                      </button>
+                  
+                      <button
+                        id="cell-aoi-to-array-sheet-csv-btn"
+                        type="button"
+                        class="btn cell-aoi-to-array-csv-btn"
+                      >
+                        選擇CSV
+                      </button>
+
+                      
+
+                      <button
+                        id="cell-aoi-to-array-sheet-csv-clear-btn"
+                        type="button"
+                        class="btn cell-aoi-to-array-csv-clear-btn"
+                        style="display:none;"
+                      >
+                        清除
+                      </button>
+                      <div
+                        id="cell-aoi-to-array-sheet-csv-info"
+                        class="cell-aoi-to-array-csv-info"
+                      >
+                        未選擇
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="cell-aoi-to-array-filter-actions">
+                    <button id="cell-aoi-to-array-apply-btn" class="btn cell-aoi-to-array-apply-btn">套用</button>
+                  </div>
+
+                </div>
+              </section>
+
+              <!-- 片數統計卡片 -->
+              <section id="cell-aoi-to-array-summary-cards" class="cell-aoi-to-array-summary-cards"></section>
+
+              <!-- 多張折線圖區域 -->
+              <section class="cell-aoi-to-array-chart-card card">
+                <div class="cell-aoi-to-array-section-head">
+                  <div>
+                    <h2 id="cell-aoi-to-array-chart-title" class="cell-aoi-to-array-section-title">Cell AOI抽檢比對</h2>
+                    <p id="cell-aoi-to-array-chart-subtitle" class="cell-aoi-to-array-section-subtitle">依篩選條件顯示抽檢比對趨勢</p>
+                  </div>
+                </div>
+
+                <div id="cell-aoi-to-array-chart-grid" class="cell-aoi-to-array-chart-grid"></div>
+              </section>
+
+              <!-- 總清單容器 -->
+              <section class="cell-aoi-to-array-table-card card">
+                <div class="cell-aoi-to-array-section-head">
+                  <div>
+                    <h2 class="cell-aoi-to-array-section-title">line詳細比對資料</h2>
+                    <p id="cell-aoi-to-array-table-desc" class="cell-aoi-to-array-section-subtitle">顯示目前篩選條件下的全部詳細資料</p>
+                  </div>
+                </div>
+
+                <div class="cell-aoi-to-array-table-toolbar">
+                  <button id="cell-aoi-to-array-return-btn" class="btn btn-xs btn-secondary">RETURN</button>
+                  <div id="cell-aoi-to-array-table-mode" class="cell-aoi-to-array-table-mode">All Data</div>
+                </div>
+
+                <div class="cell-aoi-to-array-table-wrap">
+                  <table id="cell-aoi-to-array-table" class="table cell-aoi-to-array-table">
+                    <thead></thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+
+                <div class="cell-aoi-to-array-table-footer">
+                  <div id="cell-aoi-to-array-total-count" class="cell-aoi-to-array-total-count">Total 0 items</div>
+                  <div id="cell-aoi-to-array-pager" class="cell-aoi-to-array-pager"></div>
+                </div>
+              </section>
+
+              <!-- SHEET 詳細資訊 -->
+              <section class="cell-aoi-to-array-sheet-card card">
+                <div class="cell-aoi-to-array-section-head">
+                  <div>
+                    <h2 class="cell-aoi-to-array-section-title">Sheet詳細資訊</h2>
+                    <p id="cell-aoi-to-array-sheet-desc" class="cell-aoi-to-array-section-subtitle">請點選任一Sheet進行查看</p>
+                  </div>
+                </div>
+              
+                <div id="cell-aoi-to-array-sheet-detail" class="cell-aoi-to-array-sheet-detail">
+                  <div class="cell-aoi-to-array-empty-state">
+                    <div class="cell-aoi-to-array-empty-icon">▦</div>
+                    <div>請點選「詳情」查看 Sheet defect map</div>
+                  </div>
+                </div>
+              
+                <div id="cell-aoi-to-array-defect-list-wrap" class="cell-aoi-to-array-defect-list-wrap" style="display:none;">
+                  <div class="cell-aoi-to-array-defect-list-head">
+                    <div class="cell-aoi-to-array-defect-list-title">Defect點位明細</div>
+                    <div id="cell-aoi-to-array-defect-list-count" class="cell-aoi-to-array-defect-list-count">Total 0 defects</div>
+                  </div>
+              
+                  <div class="cell-aoi-to-array-defect-table-wrap">
+                    <table id="cell-aoi-to-array-defect-table" class="table cell-aoi-to-array-defect-table">
+                      <thead></thead>
+                      <tbody></tbody>
+                    </table>
+                  </div>
+                </div>
+              </section>
+            </section>
+
+            <!-- 尚未設定功能頁時顯示 -->
+            <section id="cell-aoi-to-array-empty-section" class="cell-aoi-to-array-empty-section card" style="display:none;">
+              <div class="cell-aoi-to-array-empty-state">
+                <div class="cell-aoi-to-array-empty-icon">⌁</div>
+                <div id="cell-aoi-to-array-empty-text">此分頁尚未設定功能內容。</div>
+              </div>
+            </section>
+
+          </main>
+        </div>
+      </section>
+      <!-- ===================== /Cell AOI To Array / 來料檢 App ===================== -->
+
+
+      <div id="app" class="l6a-track-page" data-l6a-page="pi-aoi-analysis">
+        <!-- Top：共用 -->
+        <header id="top-container" class="card top">
+          <div class="top-left">
+            <nav id="system-tabs" class="sys-tabs">
+              <button class="sys-tab active" data-view="ol-defect-map">同點比對</button>
+              <button class="sys-tab" data-view="aoi-bpi-density">PI前後檢(開發中)</button>
+              <button class="sys-tab" data-view="aoi-density">AOI Density</button>
+              <button class="sys-tab" data-view="aoi-inspection-density">Inspection Density</button>
+              <button class="sys-tab" data-view="aoi-capa">CAPA稼動率</button>
+              
+            </nav>
+          </div>
+      
+          <div class="top-center">
+            <h1>AOI SYSTEM</h1>
+            <div id="all-tab-container" class="line-tabs"></div>
+          </div>
+      
+          <div class="top-right">
+            <!-- 右上：OL Defect Map 用的日期區間 -->
+            <div class="inline-filter ol-defect-map-inline-filter" id="ol-defect-map-global-filter">
+              <label>日期</label>
+              <input id="ol-defect-map-date-from" type="date" />
+              <span>-</span>
+              <input id="ol-defect-map-date-to" type="date" />
+              <button id="ol-defect-map-apply-dates" class="btn btn-sm">套用</button>
+              <button id="ol-defect-map-clear-dates" class="btn btn-sm btn-secondary">清空</button>
+            </div>
+      
+            <!-- 右上：AOI BPI Density 子分頁 -->
+            <div id="aoi-bpi-density-subtabs" class="line-tabs" style="display:none;"></div>
+      
+          
+            <!-- 右上：AOI Density 子分頁 -->
+            <div id="aoi-density-subtabs" class="line-tabs" style="display:none;"></div>
+          
+            <!-- 右上：AOI Inspection Density 子分頁 -->
+            <div id="aoi-inspection-density-subtabs" class="line-tabs" style="display:none;"></div>
+          
+            <!-- 右上：AOI CAPA 子分頁 -->
+            <div id="aoi-capa-subtabs" class="line-tabs" style="display:none;"></div>
+      
+            
+          </div>
+        </header>
+      
+        <!-- ===== Main ===== -->
+        <main id="main-area">
+          <!-- ===================== OL Defect Map root =====================  -->
+          <section id="ol-defect-map-root" class="ol-defect-map-root-section" style="display:none;"> 
+            <!-- 上排：Defect Map + Run Info（左右 1.3 : 1） -->
+            <div id="ol-defect-map-main-row" class="ol-defect-map-main-row">
+              <!-- 左：地圖 -->
+              <section id="ol-defect-map-section" class="card ol-defect-map-card">
+                <div class="ol-defect-map-section-title">
+                  <div class="ol-defect-map-title">Defect Map</div>
+                  <div class="ol-defect-map-controls">
+                    <div class="ol-defect-map-filter-group">
+                      <div id="ol-defect-map-size-filter-host"></div>
+                    </div>
+                  
+                    <div class="ol-defect-map-filter-group">
+                      <div id="ol-defect-map-type-filter-host"></div>
+                    </div>
+                  
+                    <div class="ol-defect-map-filter-group ol-defect-map-offset-wrap">
+                      <label for="ol-defect-map-offset-input">Offset(µm)</label>
+                      <input id="ol-defect-map-offset-input" type="number" min="1" max="100" value="5" class="input-xs">
+                      <button id="ol-defect-map-apply-offset" class="btn btn-xs">套用</button>
+                    </div>
+          
+                    <div id="ol-defect-map-overlap-summary" class="ol-defect-map-overlap-summary">
+                      <span>同點數量：<b id="ol-defect-map-overlap-count">0</b></span>
+                      <span>已選片數：<b id="ol-defect-map-selected-total">0</b></span>
+                    </div>
+                  </div>
+                </div>
+          
+                <!-- 左右 40:60 版面 -->
+                <div class="ol-defect-map-flex">
+                  <!-- 左側：Canvas -->
+                  <div class="ol-defect-map-left">
+                    <div id="ol-defect-map-container" class="ol-defect-map-container">
+                      <canvas id="ol-defect-map-canvas"></canvas>
+          
+                      <div id="ol-defect-map-axes" class="ol-defect-map-axes">
+                        <div class="ol-defect-map-axis ol-defect-map-axis-x">X</div>
+                        <div class="ol-defect-map-axis ol-defect-map-axis-y">Y</div>
+                      </div>
+          
+                      <div class="ol-defect-map-controls ol-defect-map-ops">
+                        <div class="ol-defect-map-btn-group">
+                          <button id="ol-defect-map-btn-reset" class="btn btn-xs">歸位</button>
+                          <button id="ol-defect-map-btn-zoom-in" class="btn btn-xs">+</button>
+                          <button id="ol-defect-map-btn-zoom-out" class="btn btn-xs">-</button>
+                          <button id="ol-defect-map-btn-box-zoom" class="btn btn-xs">框選</button>
+                          <button id="ol-defect-map-btn-clear-box" class="btn btn-xs btn-secondary">清除框</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+          
+                  <!-- Legend + Star Summary + Info -->
+                  <div class="ol-defect-map-right">
+                    <div class="ol-defect-map-legend" id="ol-defect-map-legend"></div>
+          
+                    <!-- 新增：固定顯示星星統計 -->
+                    <div id="ol-defect-map-star-summary" class="ol-defect-map-star-summary" style="display:none;">
+                      <div id = "ol-defect-map-star-summary-title" class="ol-defect-map-star-summary-title">同點統計</div>
+                      <div id="ol-defect-map-star-summary-body"></div>
+                    </div>
+          
+                    <div id="ol-defect-map-info-container" class="ol-defect-map-info card-sub"></div>
+                  </div>
+                </div>
+              </section>
+          
+              <!-- 右：Run Info -->
+              <aside id="ol-defect-map-run-info-block" class="card ol-defect-map-run-info-card">
+                <div class="ol-defect-map-section-title ol-defect-map-section-title-compact">
+                  <span>Run Info</span>
+                  <div id="ol-defect-map-run-stats" class="ol-defect-map-stats-badges">
+                    <span class="badge">筆數 <b id="ol-defect-map-total-count">0</b></span>
+                    <span class="badge">已選 <b id="ol-defect-map-selected-count">0</b></span>
+                  </div>
+                </div>
+          
+                <div id="ol-defect-map-run-info-filter" class="ol-defect-map-micro-filter">
+                  <div class="ol-defect-map-filter-row">
+                    <label class="ol-defect-map-filter-label">Glass</label>
+                    <input id="ol-defect-map-query-input" type="text" placeholder="輸入 glass_id 以快速篩選">
+                    <button id="ol-defect-map-apply-query" class="btn btn-xs">搜尋</button>
+                    <button id="ol-defect-map-clear-query" class="btn btn-xs btn-secondary">清空</button>
+                    <div id="ol-defect-map-multi-select-recipe"></div>
+                  </div>
+          
+                  <label class="ol-defect-map-right-check">
+                    <input id="ol-defect-map-match-same-glass" type="checkbox" checked />
+                    相同 glass 自動篩選
+                  </label>
+          
+                  <label>
+                    <input type="checkbox" id="ol-defect-map-only-multi-measured-glass">
+                    僅顯示多次量測 glass
+                  </label>
+                </div>
+          
+                <div id="ol-defect-map-run-info-table-container" class="table-wrap ol-defect-map-table-wrap">
+                  <table class="table ol-defect-map-table">
+                    <thead id="ol-defect-map-run-info-thead"></thead>
+                    <tbody id="ol-defect-map-run-info-tbody"></tbody>
+                  </table>
+                </div>
+          
+                <div class="ol-defect-map-actions">
+                  <button id="ol-defect-map-btn-clear-selection" class="btn btn-xs btn-secondary" title="清除選取">清除選取</button>
+                </div>
+              </aside>
+            </div>
+          
+            <!-- 下排：Defect Tables（整列占滿寬度） -->
+            <section id="ol-defect-map-defect-lists" class="card ol-defect-map-defect-lists-card">
+              <div class="ol-defect-map-section-title ol-defect-map-section-title-compact">
+                <span>Defect Tables（每筆）</span>
+                <div class="ol-defect-map-title-right">
+                  <span class="badge">選取 <b id="ol-defect-map-defect-list-count">0</b> 筆</span>
+                </div>
+              </div>
+          
+              <div id="ol-defect-map-defect-lists-container" class="ol-defect-map-defect-lists-grid"></div>
+            </section>
+          </section>
+          
+          <!-- ===================== /OL Defect Map root ===================== -->
+      
+          <!-- ===================== AOI BPI Density root ===================== -->
+          <section id="aoi-bpi-density-root" class="card" style="display:none;">
+            <div class="aoi-bpi-density-grid-82">
+              <!-- 左 8：Info + Charts -->
+              <div id="aoi-bpi-density-left" class="aoi-bpi-density-left">
+                <!-- Info -->
+                <section id="aoi-bpi-density-info" class="card-sub">
+                  <div class="aoi-bpi-density-info-head">
+                    <h2 class="aoi-bpi-density-title">BPI density</h2>
+                    <p class="aoi-bpi-density-sub"></p>
+                  </div>
+                  <div id="aoi-bpi-density-char-tabs" class="aoi-bpi-density-tabs"></div>
+                </section>
+      
+                <!-- Charts -->
+                <div id="aoi-bpi-density-charts" class="aoi-bpi-density-charts card-sub">
+                  <div id="aoi-bpi-density-facet"></div>
+                </div>
+              </div>
+      
+              <!-- 右 2：Filter -->
+              <aside id="aoi-bpi-density-right" class="aoi-bpi-density-right card-sub">
+                <div class="aoi-bpi-density-filter-panel-title">篩選</div>
+      
+                <div class="aoi-bpi-density-filter-item">
+                  <div class="aoi-bpi-density-row aoi-bpi-density-inline">
+                    <input type="date" id="aoi-bpi-density-start">
+                    <span class="aoi-bpi-density-sep">–</span>
+                    <input type="date" id="aoi-bpi-density-end">
+                  </div>
+                  <div class="aoi-bpi-density-filter-actions">
+                    <button id="aoi-bpi-density-apply" class="btn btn-xs">套用</button>
+                    <button id="aoi-bpi-density-clear" class="btn btn-xs btn-secondary">清空</button>
+                  </div>
+                </div>
+      
+                <div id="aoi-bpi-density-dynhosts"></div>
+                <p>----------------</p>
+              </aside>
+            </div>
+      
+            <!-- Bottom row: Table + Map -->
+            <div class="aoi-bpi-density-bottom-row">
+              <!-- Table -->
+              <section id="aoi-bpi-density-table-wrap" class="card-sub">
+                <div class="aoi-bpi-density-table-head">Analysis Table</div>
+                <div class="aoi-bpi-density-table-wrap-inner">
+                  <table class="table aoi-bpi-density-table" id="aoi-bpi-density-table">
+                    <thead></thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </section>
+      
+              <!-- Map -->
+              <section id="aoi-bpi-density-map-wrap" class="card-sub">
+                <div class="aoi-bpi-density-table-head">Map</div>
+                <div class="aoi-bpi-density-map-viewport">
+                  <canvas id="aoi-bpi-density-mini-map"></canvas>
+                </div>
+              </section>
+            </div>
+          </section>
+          <!-- ===================== /AOI BPI Density root ===================== -->
+          
+          <!-- ===================== BPI/API Same Point root ===================== -->
+          <section id="bpi-same-point-root" class="card bpi-same-point-root" style="display:none;">
+            <div class="bpi-same-point-grid-82">
+              <!-- 左：Info + Chart -->
+              <div id="bpi-same-point-left" class="bpi-same-point-left">
+                <!--<section id="bpi-same-point-info" class="card-sub">
+                  <div class="bpi-same-point-info-head">
+                    <h2 class="t">同點來料檢</h2>
+                    <p class="sub">BPI/API same point by glass</p>
+                  </div>
+                </section>-->
+      
+                <section id="bpi-same-point-chart-wrap" class="card-sub">
+                  <div id="bpi-same-point-facet"></div>
+                </section>
+              </div>
+      
+              <!-- 右：Filter -->
+              <aside id="bpi-same-point-right" class="card-sub">
+                <div class="filter-panel-title">篩選</div>
+      
+                <div class="filter-item">
+                  <div class="row inline">
+                    <input type="date" id="bpi-same-point-start">
+                    <span class="sep">–</span>
+                    <input type="date" id="bpi-same-point-end">
+                  </div>
+                  <div class="filter-actions">
+                    <button id="bpi-same-point-apply" class="btn btn-xs">套用</button>
+                    <button id="bpi-same-point-clear" class="btn btn-xs btn-secondary">清空</button>
+                  </div>
+                </div>
+      
+                <div class="filter-item">
+                  <select id="bpi-same-point-offset">
+                  </select>
+                </div>
+      
+                <div id="bpi-same-point-dynhosts"></div>
+              </aside>
+            </div>
+      
+            <!-- Bottom: Table + Map -->
+            <div class="bpi-same-point-bottom-row">
+              <section id="bpi-same-point-table-wrap" class="card-sub">
+                <div class="table-head">Same Point Table</div>
+                <div class="table-wrap">
+                  <table class="table" id="bpi-same-point-table">
+                    <thead></thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </section>
+      
+              <section id="bpi-same-point-map-wrap" class="card-sub">
+                <div class="table-head">
+                  Defect Map
+                </div>
+                <div class="map-viewport">
+                  <canvas id="bpi-same-point-mini-map"></canvas>
+                </div>
+              </section>
+            </div>
+          </section>
+          <!-- ===================== /BPI/API Same Point root ===================== -->
+      
+          <!-- ===================== BPI Area Common Table Tab ===================== -->
+          <section id="bpi-area-table-tab-root" class="card bpi-area-table-tab-root" style="display:none;">
+            <div class="bpi-area-table-tab-grid-82">
+              <!-- 左：Info + Table -->
+              <div id="bpi-area-table-tab-left" class="bpi-area-table-tab-left">
+                <section id="bpi-area-table-tab-info" class="card-sub">
+                  <div class="bpi-area-table-tab-info-head">
+                    <h2 class="t" id="bpi-area-table-tab-title"></h2>
+      
+                    <div id="bpi-area-table-tab-header-actions" class="bpi-area-table-tab-header-actions"></div>
+                  </div>
+      
+                  <!-- 給 default spec / action history 需要額外小分頁時使用 -->
+                  <div id="bpi-area-table-tab-char-tabs" class="bpi-area-table-tab-char-tabs"></div>
+                </section>
+      
+                <div class="table-wrap">
+                  <div class="table-scroll">
+                    <table class="table bpi-area-table-tab-main" id="bpi-area-table-tab-main">
+                      <thead></thead>
+                      <tbody></tbody>
+                    </table>
+                  </div>
+      
+                  <!-- 分頁器由 JS 動態建立 / 控制 -->
+                  <div id="bpi-area-table-tab-pager" class="bpi-area-table-tab-pager"></div>
+                </div>
+      
+                <!-- 新增列區塊；預設隱藏，需要 default spec 新增功能時由 JS 顯示 -->
+                <div id="bpi-area-table-tab-add-panel" class="bpi-area-table-tab-add-panel" style="display:none;"></div>
+              </div>
+      
+              <!-- 右：Filter -->
+              <aside id="bpi-area-table-tab-right" class="bpi-area-table-tab-right card-sub">
+                <div class="bpi-area-table-tab-filter-title">
+                  <span>篩選</span>
+                  <span id="bpi-area-table-tab-filter-count" class="bpi-area-table-tab-filter-count"></span>
+                </div>
+      
+                <div class="bpi-area-table-tab-filter-item">
+                  <div class="row inline">
+                    <input type="date" id="bpi-area-table-tab-start">
+                    <span class="sep">–</span>
+                    <input type="date" id="bpi-area-table-tab-end">
+                  </div>
+      
+                  <div class="bpi-area-table-tab-filter-actions">
+                    <button id="bpi-area-table-tab-apply" class="btn btn-xs">套用</button>
+                    <button id="bpi-area-table-tab-clear" class="btn btn-xs btn-secondary">清空</button>
+                  </div>
+                </div>
+      
+                <div id="bpi-area-table-tab-dynhosts"></div>
+      
+                <div id="bpi-area-table-tab-bottom-actions" class="bpi-area-table-tab-bottom-actions"></div>
+              </aside>
+            </div>
+          </section>
+          <!-- ===================== /BPI Area Common Table Tab ===================== -->
+          
+          <!-- ===================== AOI Density root ===================== -->
+          <section id="aoi-density-root" class="card" style="display:none;">
+            <div class="aoi-density-grid-82">
+              <!-- 左 8：Info + Charts -->
+              <div id="aoi-density-left" class="aoi-density-left">
+                <!-- Info -->
+                <section id="aoi-density-info" class="card-sub">
+                  <div class="aoi-density-info-head">
+                    <h2 class="t">density公式: 'defect count' / 'total glass count(hourly)'</h2>
+                    <p class="sub"></p>
+                  </div>
+                  <div id="aoi-density-char-tabs" class="aoi-density-tabs"></div>
+                </section>
+      
+                <!-- Charts -->
+                <div id="aoi-density-charts" class="aoi-density-charts card-sub">
+                  <div id="aoi-density-facet"></div>
+                </div>
+              </div>
+      
+              <!-- 右 2：Filter -->
+              <aside id="aoi-density-right" class="aoi-density-right card-sub">
+                <div class="filter-panel-title">篩選</div>
+      
+                <div class="filter-item">
+                  <div class="row inline">
+                    <input type="date" id="aoi-density-start">
+                    <span class="sep">–</span>
+                    <input type="date" id="aoi-density-end">
+                  </div>
+                  <div class="filter-actions">
+                    <button id="aoi-density-apply" class="btn btn-xs">套用</button>
+                    <button id="aoi-density-clear" class="btn btn-xs btn-secondary">清空</button>
+                  </div>
+                </div>
+      
+                <div id="aoi-density-dynhosts"></div>
+                <p>----------------</p>
+              </aside>
+            </div>
+      
+            <!-- Bottom row: Table + Map -->
+            <div class="aoi-density-bottom-row">
+              <!-- Table -->
+              <section id="aoi-density-table-wrap" class="card-sub">
+                <div class="table-head">Analysis Table</div>
+                <div class="table-wrap">
+                  <table class="table aoi-density-table" id="aoi-density-table">
+                    <thead></thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </section>
+      
+              <!-- Map -->
+              <section id="aoi-density-map-wrap" class="card-sub">
+                <div class="table-head">Map</div>
+                <div class="map-viewport">
+                  <canvas id="aoi-density-mini-map"></canvas>
+                </div>
+              </section>
+            </div>
+          </section>
+          <!-- ===================== /AOI Density root ===================== -->
+      
+          
+          <!-- ===================== AOI Density Spec Table ===================== -->
+          <section id="aoi-density-spec-table" class="card aoi-density-spec-root" style="display:none;">
+            <div class="aoi-density-spec-grid-82">
+              <!-- 左 8：Info + Table -->
+              <div id="aoi-density-spec-left" class="aoi-density-spec-left">
+                <section id="aoi-density-spec-info" class="card-sub">
+                  <div class="aoi-density-spec-info-head">
+                    <h2 class="t"></h2>
+                  </div>
+                  <div id="aoi-density-spec-char-tabs" class="aoi-density-spec-tabs"></div>
+                </section>
+      
+                <div class="table-wrap">
+                  <div class="table-scroll">
+                    <table class="table aoi-density-spec-table" id="aoi-density-spec-table-main">
+                      <thead></thead>
+                      <tbody></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+      
+              <!-- 右 2：Filter -->
+              <aside id="aoi-density-spec-right" class="aoi-density-spec-right card-sub">
+                <div class="spec-filter-panel-title">篩選</div>
+      
+                <div class="spec-filter-item">
+                  <div class="row inline">
+                    <input type="date" id="aoi-density-spec-start">
+                    <span class="sep">–</span>
+                    <input type="date" id="aoi-density-spec-end">
+                  </div>
+                  <div class="spec-filter-actions">
+                    <button id="aoi-density-spec-apply" class="btn btn-xs">套用</button>
+                    <button id="aoi-density-spec-clear" class="btn btn-xs btn-secondary">清空</button>
+                  </div>
+                </div>
+      
+                <div id="aoi-density-spec-dynhosts"></div>
+              </aside>
+            </div>
+          </section>
+          <!-- ===================== /AOI Density Spec Table ===================== -->
+      
+          <!-- ===================== AOI Density Trend Chart ===================== -->
+          <section id="aoi-density-trend-chart-root" class="aoi-density-trend-chart-section" style="display:none;">
+            <div class="aoi-density-trend-chart-inner">
+      
+              <!-- ===== Group 0: Summary ===== -->
+              <section class="aoi-density-trend-chart-group" data-chart-group="0">
+                <div class="aoi-density-trend-chart-header">
+                  <div class="aoi-density-trend-chart-title">
+                    <h3 class="aoi-density-trend-chart-title-text">Trend Summary</h3>
+                    <p class="aoi-density-trend-chart-subtitle" id="aoi-density-trend-chart-desc-0">
+                      Month + Week + Day
+                    </p>
+                  </div>
+      
+                  <div class="aoi-density-trend-chart-filter-row--summary" id="aoi-density-trend-chart-filters-g0">
+                    <div class="aoi-density-trend-chart-filter-row-time">
+                      <label class="aoi-density-trend-chart-month-filter">
+                        <span class="aoi-density-trend-chart-tilde">月份</span>
+                        <input type="month" id="aoi-density-trend-chart-g0-monthStart" class="aoi-density-trend-chart-month-input">
+                        <span class="aoi-density-trend-chart-tilde">～</span>
+                        <input type="month" id="aoi-density-trend-chart-g0-monthEnd" class="aoi-density-trend-chart-month-input">
+                      </label>
+      
+                      <div class="aoi-density-trend-chart-week-filter">
+                        <span class="aoi-density-trend-chart-tilde">週別</span>
+                        <input type="week" id="aoi-density-trend-chart-g0-weekStart" class="aoi-density-trend-chart-week-input">
+                        <span class="aoi-density-trend-chart-tilde">～</span>
+                        <input type="week" id="aoi-density-trend-chart-g0-weekEnd" class="aoi-density-trend-chart-week-input">
+                      </div>
+      
+                      <div class="aoi-density-trend-chart-day-filter">
+                        <span class="aoi-density-trend-chart-tilde">日期</span>
+                        <input type="date" id="aoi-density-trend-chart-g0-dayStart" class="aoi-density-trend-chart-input-date">
+                        <span class="aoi-density-trend-chart-tilde">~</span>
+                        <input type="date" id="aoi-density-trend-chart-g0-dayEnd" class="aoi-density-trend-chart-input-date">
+                      </div>
+      
+                      <button id="aoi-density-trend-chart-g0-apply" class="btn btn-xs">套用</button>
+                      <button id="aoi-density-trend-chart-g0-clear" class="btn btn-xs btn-secondary">清空</button>
+      
+                      <div class="aoi-density-trend-chart-dynhosts" id="aoi-density-trend-chart-dynhosts-g0"></div>
+                    </div>
+                  </div>
+                </div>
+      
+                <div class="aoi-density-trend-chart-body">
+                  <div id="aoi-density-trend-chart-canvas-0" class="aoi-density-trend-chart-container"></div>
+                </div>
+              </section>
+      
+              <!-- ===== Group 1: Month ===== -->
+              <section class="aoi-density-trend-chart-group" data-chart-group="1">
+                <div class="aoi-density-trend-chart-header">
+                  <div class="aoi-density-trend-chart-title">
+                    <h3 class="aoi-density-trend-chart-title-text">Trend - Month</h3>
+                    <p class="aoi-density-trend-chart-subtitle" id="aoi-density-trend-chart-desc-1">by MYYMM</p>
+                  </div>
+      
+                  <div class="aoi-density-trend-chart-filter-row" id="aoi-density-trend-chart-filters-g1">
+                    <label class="aoi-density-trend-chart-month-filter">
+                      <span class="aoi-density-trend-chart-tilde">月份</span>
+                      <input type="month" id="aoi-density-trend-chart-g1-monthStart" class="aoi-density-trend-chart-month-input">
+                      <span class="aoi-density-trend-chart-tilde">~</span>
+                      <input type="month" id="aoi-density-trend-chart-g1-monthEnd" class="aoi-density-trend-chart-month-input">
+                    </label>
+      
+                    <button id="aoi-density-trend-chart-g1-apply" class="btn btn-xs">套用</button>
+                    <button id="aoi-density-trend-chart-g1-clear" class="btn btn-xs btn-secondary">清空</button>
+      
+                    <div class="aoi-density-trend-chart-dynhosts" id="aoi-density-trend-chart-dynhosts-g1"></div>
+                  </div>
+                </div>
+      
+                <div class="aoi-density-trend-chart-body">
+                  <div id="aoi-density-trend-chart-canvas-1" class="aoi-density-trend-chart-container"></div>
+                </div>
+              </section>
+      
+              <!-- ===== Group 2: Week ===== -->
+              <section class="aoi-density-trend-chart-group" data-chart-group="2">
+                <div class="aoi-density-trend-chart-header">
+                  <div class="aoi-density-trend-chart-title">
+                    <h3 class="aoi-density-trend-chart-title-text">Trend - Week</h3>
+                    <p class="aoi-density-trend-chart-subtitle" id="aoi-density-trend-chart-desc-2">by WYYWW</p>
+                  </div>
+      
+                  <div class="aoi-density-trend-chart-filter-row" id="aoi-density-trend-chart-filters-g2">
+                    <div class="aoi-density-trend-chart-week-filter">
+                      <span class="aoi-density-trend-chart-tilde">週別</span>
+                      <input type="week" id="aoi-density-trend-chart-g2-weekStart" class="aoi-density-trend-chart-week-input" style="width:200px">
+                      <span class="aoi-density-trend-chart-tilde">～</span>
+                      <input type="week" id="aoi-density-trend-chart-g2-weekEnd" class="aoi-density-trend-chart-week-input" style="width:200px">
+                    </div>
+      
+                    <button id="aoi-density-trend-chart-g2-apply" class="btn btn-xs">套用</button>
+                    <button id="aoi-density-trend-chart-g2-clear" class="btn btn-xs btn-secondary">清空</button>
+      
+                    <div class="aoi-density-trend-chart-dynhosts" id="aoi-density-trend-chart-dynhosts-g2"></div>
+                  </div>
+                </div>
+      
+                <div class="aoi-density-trend-chart-body">
+                  <div id="aoi-density-trend-chart-canvas-2" class="aoi-density-trend-chart-container"></div>
+                </div>
+              </section>
+      
+              <!-- ===== Group 3: Day ===== -->
+              <section class="aoi-density-trend-chart-group" data-chart-group="3">
+                <div class="aoi-density-trend-chart-header">
+                  <div class="aoi-density-trend-chart-title">
+                    <h3 class="aoi-density-trend-chart-title-text">Trend - Day</h3>
+                    <p class="aoi-density-trend-chart-subtitle" id="aoi-density-trend-chart-desc-3">by DMMDD</p>
+                  </div>
+      
+                  <div class="aoi-density-trend-chart-filter-row" id="aoi-density-trend-chart-filters-g3">
+                    <div class="aoi-density-trend-chart-day-filter">
+                      <span class="aoi-density-trend-chart-tilde">日期</span>
+                      <input type="date" id="aoi-density-trend-chart-g3-dayStart" class="aoi-density-trend-chart-input-date">
+                      <span class="aoi-density-trend-chart-tilde">～</span>
+                      <input type="date" id="aoi-density-trend-chart-g3-dayEnd" class="aoi-density-trend-chart-input-date">
+                    </div>
+      
+                    <button id="aoi-density-trend-chart-g3-apply" class="btn btn-xs">套用</button>
+                    <button id="aoi-density-trend-chart-g3-clear" class="btn btn-xs btn-secondary">清空</button>
+      
+                    <div class="aoi-density-trend-chart-dynhosts" id="aoi-density-trend-chart-dynhosts-g3"></div>
+                  </div>
+                </div>
+      
+                <div class="aoi-density-trend-chart-body">
+                  <div id="aoi-density-trend-chart-canvas-3" class="aoi-density-trend-chart-container"></div>
+                </div>
+              </section>
+      
+            </div>
+          </section>
+          <!-- ===================== /AOI Density Trend Chart ===================== -->
+      
+          <!-- ===================== AOI Inspection Density root ===================== -->
+          <section id="aoi-inspection-density-root" class="card" style="display:none;">
+            <div class="aoi-inspection-density-grid-82">
+              <!-- 左 8：Info + Charts -->
+              <div id="aoi-inspection-density-left" class="aoi-inspection-density-left">
+                <section id="aoi-inspection-density-info" class="card-sub">
+                  <div class="aoi-inspection-density-info-head">
+                    <h2 class="t">Inspection</h2>
+                    <p class="sub"></p>
+                  </div>
+                  <div id="aoi-inspection-density-char-tabs" class="aoi-inspection-density-tabs"></div>
+                </section>
+      
+                <div id="aoi-inspection-density-charts" class="card-sub">
+                  <div id="aoi-inspection-density-facet"></div>
+                </div>
+              </div>
+      
+              <!-- 右 2：Filter -->
+              <aside id="aoi-inspection-density-right" class="card-sub">
+                <div class="filter-panel-title">篩選</div>
+      
+                <div class="filter-item">
+                  <div class="row inline">
+                    <input type="date" id="aoi-inspection-density-start">
+                    <span class="sep">-</span>
+                    <input type="date" id="aoi-inspection-density-end">
+                  </div>
+                  <div class="filter-actions">
+                    <button id="aoi-inspection-density-apply" class="btn btn-xs">套用</button>
+                    <button id="aoi-inspection-density-clear" class="btn btn-xs btn-secondary">清空</button>
+                  </div>
+                </div>
+      
+                <div id="aoi-inspection-density-dynhosts"></div>
+                <p>----------------</p>
+              </aside>
+            </div>
+      
+            <div class="aoi-inspection-density-bottom-row">
+              <section id="aoi-inspection-density-table-wrap" class="card-sub">
+                <div class="table-head">Inspection Table</div>
+                <div class="table-wrap">
+                  <table class="table aoi-inspection-density-table" id="aoi-inspection-density-table">
+                    <thead></thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </section>
+      
+              <section id="aoi-inspection-density-map-wrap" class="card-sub">
+                <div class="table-head">Map</div>
+                <div class="map-viewport">
+                  <canvas id="aoi-inspection-density-mini-map"></canvas>
+                </div>
+              </section>
+            </div>
+          </section>
+          <!-- ===================== /AOI Inspection Density root ===================== -->
+      
+          <!-- ===================== AOI Inspection Density Spec Table ===================== -->
+          <section id="aoi-inspection-density-spec-table" class="card aoi-inspection-density-spec-root" style="display:none;">
+            <div class="aoi-inspection-density-spec-grid-82">
+              <!-- 左 8：Info + Table -->
+              <div id="aoi-inspection-density-spec-left" class="aoi-inspection-density-spec-left">
+                <section id="aoi-inspection-density-spec-info" class="card-sub">
+                  <div class="aoi-inspection-density-spec-info-head">
+                    <h2 class="t"></h2>
+                  </div>
+                  <div id="aoi-inspection-density-spec-char-tabs" class="aoi-inspection-density-spec-tabs"></div>
+                </section>
+      
+                <div class="table-wrap">
+                  <div class="table-scroll">
+                    <table class="table aoi-inspection-density-spec-table" id="aoi-inspection-density-spec-table-main">
+                      <thead></thead>
+                      <tbody></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+      
+              <!-- 右 2：Filter -->
+              <aside id="aoi-inspection-density-spec-right" class="aoi-inspection-density-spec-right card-sub">
+                <div class="aoi-inspection-density-spec-filter-panel-title">篩選</div>
+                <!-- 
+                <div class="aoi-inspection-density-spec-filter-item">
+                  <div class="aoi-inspection-density-spec-filter-actions">
+                    <button id="aoi-inspection-density-spec-apply" class="btn btn-xs">套用</button>
+                    <button id="aoi-inspection-density-spec-clear" class="btn btn-xs btn-secondary">清空</button>
+                  </div>
+                  <div class="row inline">
+                    <input type="date" id="aoi-inspection-density-spec-start">
+                    <span class="sep">-</span>
+                    <input type="date" id="aoi-inspection-density-spec-end">
+                  </div>
+                </div>
+                  -->
+      
+                  <div class="aoi-inspection-density-spec-filter-item">
+                  <div class="aoi-inspection-density-spec-filter-actions">
+                    <button id="aoi-inspection-density-spec-apply" class="btn btn-xs">套用</button>
+                    <button id="aoi-inspection-density-spec-clear" class="btn btn-xs btn-secondary">清空</button>
+                  </div>
+                
+                  <div class="aoi-inspection-density-spec-date-row" id="aoi-inspection-density-spec-date-row">
+                    <div class="row inline">
+                      <input type="date" id="aoi-inspection-density-spec-start">
+                      <span class="sep">-</span>
+                      <input type="date" id="aoi-inspection-density-spec-end">
+                    </div>
+                  </div>
+                </div>
+      
+                <div id="aoi-inspection-density-spec-dynhosts"></div>
+              </aside>
+            </div>
+          </section>
+          <!-- ===================== /AOI Inspection Density Spec Table ===================== -->
+      
+          <!-- ===================== AOI Inspection Density Trend Chart ===================== -->
+          <section id="aoi-inspection-density-chart-root" class="aoi-inspection-density-trend-chart-section" style="display:none;">
+            <div class="aoi-inspection-density-trend-chart-inner">
+      
+              <!-- ===== Group 0: Summary ===== -->
+              <section class="aoi-inspection-density-trend-chart-group" data-chart-group="0">
+                <div class="aoi-inspection-density-trend-chart-header">
+                  <div class="aoi-inspection-density-trend-chart-title">
+                    <h3 class="aoi-inspection-density-trend-chart-title-text">Trend Summary</h3>
+                    <p class="aoi-inspection-density-trend-chart-subtitle" id="aoi-inspection-density-trend-chart-desc-0">
+                      Month + Week + Day
+                    </p>
+                  </div>
+      
+                  <div class="aoi-inspection-density-trend-chart-filter-row--summary" id="aoi-inspection-density-trend-chart-filters-g0">
+                    <div class="aoi-inspection-density-trend-chart-filter-row-time">
+                      <label class="aoi-inspection-density-trend-chart-month-filter">
+                        <span class="aoi-inspection-density-trend-chart-tilde">月份</span>
+                        <input type="month" id="aoi-inspection-density-trend-chart-g0-monthStart" class="aoi-inspection-density-trend-chart-month-input">
+                        <span class="aoi-inspection-density-trend-chart-tilde">～</span>
+                        <input type="month" id="aoi-inspection-density-trend-chart-g0-monthEnd" class="aoi-inspection-density-trend-chart-month-input">
+                      </label>
+      
+                      <div class="aoi-inspection-density-trend-chart-week-filter">
+                        <span class="aoi-inspection-density-trend-chart-tilde">週別</span>
+                        <input type="week" id="aoi-inspection-density-trend-chart-g0-weekStart" class="aoi-inspection-density-trend-chart-week-input">
+                        <span class="aoi-inspection-density-trend-chart-tilde">～</span>
+                        <input type="week" id="aoi-inspection-density-trend-chart-g0-weekEnd" class="aoi-inspection-density-trend-chart-week-input">
+                      </div>
+      
+                      <div class="aoi-inspection-density-trend-chart-day-filter">
+                        <span class="aoi-inspection-density-trend-chart-tilde">日期</span>
+                        <input type="date" id="aoi-inspection-density-trend-chart-g0-dayStart" class="aoi-inspection-density-trend-chart-input-date">
+                        <span class="aoi-inspection-density-trend-chart-tilde">~</span>
+                        <input type="date" id="aoi-inspection-density-trend-chart-g0-dayEnd" class="aoi-inspection-density-trend-chart-input-date">
+                      </div>
+      
+                      <button id="aoi-inspection-density-trend-chart-g0-apply" class="btn btn-xs">套用</button>
+                      <button id="aoi-inspection-density-trend-chart-g0-clear" class="btn btn-xs btn-secondary">清空</button>
+      
+                      <div class="aoi-inspection-density-trend-chart-dynhosts" id="aoi-inspection-density-trend-chart-dynhosts-g0"></div>
+                    </div>
+                  </div>
+                </div>
+      
+                <div class="aoi-inspection-density-trend-chart-body">
+                  <div id="aoi-inspection-density-trend-chart-canvas-0" class="aoi-inspection-density-trend-chart-container"></div>
+                </div>
+              </section>
+      
+              <!-- ===== Group 1: Month ===== -->
+              <section class="aoi-inspection-density-trend-chart-group" data-chart-group="1">
+                <div class="aoi-inspection-density-trend-chart-header">
+                  <div class="aoi-inspection-density-trend-chart-title">
+                    <h3 class="aoi-inspection-density-trend-chart-title-text">Trend - Month</h3>
+                    <p class="aoi-inspection-density-trend-chart-subtitle" id="aoi-inspection-density-trend-chart-desc-1">by MYYMM</p>
+                  </div>
+      
+                  <div class="aoi-inspection-density-trend-chart-filter-row" id="aoi-inspection-density-trend-chart-filters-g1">
+                    <label class="aoi-inspection-density-trend-chart-month-filter">
+                      <span class="aoi-inspection-density-trend-chart-tilde">月份</span>
+                      <input type="month" id="aoi-inspection-density-trend-chart-g1-monthStart" class="aoi-inspection-density-trend-chart-month-input">
+                      <span class="aoi-inspection-density-trend-chart-tilde">~</span>
+                      <input type="month" id="aoi-inspection-density-trend-chart-g1-monthEnd" class="aoi-inspection-density-trend-chart-month-input">
+                    </label>
+      
+                    <button id="aoi-inspection-density-trend-chart-g1-apply" class="btn btn-xs">套用</button>
+                    <button id="aoi-inspection-density-trend-chart-g1-clear" class="btn btn-xs btn-secondary">清空</button>
+      
+                    <div class="aoi-inspection-density-trend-chart-dynhosts" id="aoi-inspection-density-trend-chart-dynhosts-g1"></div>
+                  </div>
+                </div>
+      
+                <div class="aoi-inspection-density-trend-chart-body">
+                  <div id="aoi-inspection-density-trend-chart-canvas-1" class="aoi-inspection-density-trend-chart-container"></div>
+                </div>
+              </section>
+      
+              <!-- ===== Group 2: Week ===== -->
+              <section class="aoi-inspection-density-trend-chart-group" data-chart-group="2">
+                <div class="aoi-inspection-density-trend-chart-header">
+                  <div class="aoi-inspection-density-trend-chart-title">
+                    <h3 class="aoi-inspection-density-trend-chart-title-text">Trend - Week</h3>
+                    <p class="aoi-inspection-density-trend-chart-subtitle" id="aoi-inspection-density-trend-chart-desc-2">by WYYWW</p>
+                  </div>
+      
+                  <div class="aoi-inspection-density-trend-chart-filter-row" id="aoi-inspection-density-trend-chart-filters-g2">
+                    <div class="aoi-inspection-density-trend-chart-week-filter">
+                      <span class="aoi-inspection-density-trend-chart-tilde">週別</span>
+                      <input type="week" id="aoi-inspection-density-trend-chart-g2-weekStart" class="aoi-inspection-density-trend-chart-week-input" style="width:200px">
+                      <span class="aoi-inspection-density-trend-chart-tilde">～</span>
+                      <input type="week" id="aoi-inspection-density-trend-chart-g2-weekEnd" class="aoi-inspection-density-trend-chart-week-input" style="width:200px">
+                    </div>
+      
+                    <button id="aoi-inspection-density-trend-chart-g2-apply" class="btn btn-xs">套用</button>
+                    <button id="aoi-inspection-density-trend-chart-g2-clear" class="btn btn-xs btn-secondary">清空</button>
+      
+                    <div class="aoi-inspection-density-trend-chart-dynhosts" id="aoi-inspection-density-trend-chart-dynhosts-g2"></div>
+                  </div>
+                </div>
+      
+                <div class="aoi-inspection-density-trend-chart-body">
+                  <div id="aoi-inspection-density-trend-chart-canvas-2" class="aoi-inspection-density-trend-chart-container"></div>
+                </div>
+              </section>
+      
+              <!-- ===== Group 3: Day ===== -->
+              <section class="aoi-inspection-density-trend-chart-group" data-chart-group="3">
+                <div class="aoi-inspection-density-trend-chart-header">
+                  <div class="aoi-inspection-density-trend-chart-title">
+                    <h3 class="aoi-inspection-density-trend-chart-title-text">Trend - Day</h3>
+                    <p class="aoi-inspection-density-trend-chart-subtitle" id="aoi-inspection-density-trend-chart-desc-3">by DMMDD</p>
+                  </div>
+      
+                  <div class="aoi-inspection-density-trend-chart-filter-row" id="aoi-inspection-density-trend-chart-filters-g3">
+                    <div class="aoi-inspection-density-trend-chart-day-filter">
+                      <span class="aoi-inspection-density-trend-chart-tilde">日期</span>
+                      <input type="date" id="aoi-inspection-density-trend-chart-g3-dayStart" class="aoi-inspection-density-trend-chart-input-date">
+                      <span class="aoi-inspection-density-trend-chart-tilde">～</span>
+                      <input type="date" id="aoi-inspection-density-trend-chart-g3-dayEnd" class="aoi-inspection-density-trend-chart-input-date">
+                    </div>
+      
+                    <button id="aoi-inspection-density-trend-chart-g3-apply" class="btn btn-xs">套用</button>
+                    <button id="aoi-inspection-density-trend-chart-g3-clear" class="btn btn-xs btn-secondary">清空</button>
+      
+                    <div class="aoi-inspection-density-trend-chart-dynhosts" id="aoi-inspection-density-trend-chart-dynhosts-g3"></div>
+                  </div>
+                </div>
+      
+                <div class="aoi-inspection-density-trend-chart-body">
+                  <div id="aoi-inspection-density-trend-chart-canvas-3" class="aoi-inspection-density-trend-chart-container"></div>
+                </div>
+              </section>
+      
+            </div>
+          </section>
+          <!-- ===================== /AOI Inspection Density Trend Chart ===================== -->
+      
+          <!-- ===================== AOI CAPA ===================== -->
+          <section id="aoi-capa-root" class="card aoi-capa-root-section" style="display:none;">
+            <!-- 上半：Chart + Filter（8:2） -->
+            <div class="aoi-capa-grid-82">
+              <div id="aoi-capa-left" class="aoi-capa-left">
+                <section id="aoi-capa-info" class="card-sub">
+                  <div class="aoi-capa-info-head">
+                    <h2 class="aoi-capa-info-title">CAPA</h2>
+                    <p class="aoi-capa-info-sub"></p>
+                  </div>
+                  <div id="aoi-capa-chart-tabs" class="aoi-capa-tabs"></div>
+                </section>
+      
+                <!-- Charts 區 -->
+                <section id="aoi-capa-charts" class="aoi-capa-charts card-sub">
+                  <div id="aoi-capa-facet"></div>
+                </section>
+              </div>
+      
+              <!-- 右側：Filter 區 -->
+              <aside id="aoi-capa-right" class="aoi-capa-right card-sub">
+                <!-- 上：日期 + MultiDD -->
+                <div class="aoi-capa-right-top">
+                  <div class="aoi-capa-filter-panel-title">篩選</div>
+      
+                  <div class="aoi-capa-filter-block">
+                    <div class="aoi-capa-filter-actions">
+                      <button id="aoi-capa-apply" class="btn btn-xs">套用</button>
+                      <button id="aoi-capa-clear" class="btn btn-xs btn-secondary">清空</button>
+                    </div>
+                    <div class="row inline">
+                      <input type="date" id="aoi-capa-start">
+                      <span class="sep">–</span>
+                      <input type="date" id="aoi-capa-end">
+                    </div>
+                  </div>
+      
+                  <div id="aoi-capa-dynhosts"></div>
+                </div>
+      
+                <!-- 下：AOI Target / SPEC -->
+                <div class="aoi-capa-right-bottom">
+                  <div class="aoi-capa-target-panel">
+                    <div class="aoi-capa-target-panel-head">
+                      <span class="aoi-capa-target-panel-title">AOI Target / SPEC</span>
+                      <div class="aoi-capa-target-panel-actions">
+                        <button id="aoi-capa-target-edit" class="btn btn-xs">編輯</button>
+                        <button id="aoi-capa-target-apply" class="btn btn-xs btn-primary" style="display:none;">套用</button>
+                        <button id="aoi-capa-target-cancel" class="btn btn-xs btn-secondary" style="display:none;">取消</button>
+                      </div>
+                    </div>
+      
+                    <div class="aoi-capa-target-panel-body">
+                      <table class="aoi-capa-target-table"></table>
+                    </div>
+                  </div>
+                </div>
+              </aside>
+            </div>
+      
+            <!-- 下半：Table(8) + Day Info(2) -->
+            <section id="aoi-capa-table-wrap" class="card-sub aoi-capa-table-section">
+              <div class="aoi-capa-table-grid">
+                <!-- 左：Table -->
+                <div class="aoi-capa-table-main">
+                  <div class="aoi-capa-table-head">
+                    <span class="aoi-capa-table-title">CAPA Table</span>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="table aoi-capa-table" id="aoi-capa-table">
+                      <thead></thead>
+                      <tbody></tbody>
+                    </table>
+                  </div>
+                </div>
+      
+                <!-- 右：Day Info -->
+                <aside id="aoi-capa-day-detail" class="aoi-capa-day-detail">
+                  <div class="aoi-capa-day-detail-head">
+                    <span class="aoi-capa-day-detail-title">Day Info</span>
+                    <div class="aoi-capa-day-detail-actions">
+                      <button id="aoi-capa-detail-edit" class="btn btn-xs">編輯</button>
+                      <button id="aoi-capa-detail-save" class="btn btn-xs btn-primary" style="display:none;">儲存</button>
+                      <button id="aoi-capa-detail-cancel" class="btn btn-xs btn-secondary" style="display:none;">取消</button>
+                    </div>
+                  </div>
+      
+                  <table class="aoi-capa-detail-table"> </table>
+                </aside>
+              </div>
+            </section>
+          </section>
+          <!-- ===================== /AOI CAPA ===================== -->
+      
+          <!-- ===================== AOI CAPA Spec Table =====================
+            <div id="aoi-capa-spec-char-tabs" class="aoi-capa-spec-tabs"></div>
+          -->
+          <section id="aoi-capa-spec-table" class="card aoi-capa-spec-root" style="display:none;">
+            <div class="aoi-capa-spec-grid-82">
+              <!-- 左 8：Info + Table -->
+              <div id="aoi-capa-spec-left" class="aoi-capa-spec-left">
+                <section id="aoi-capa-spec-info" class="card-sub">
+                  <div class="aoi-capa-spec-info-head">
+                    <h2 class="t">AOI CAPA Spec Table</h2>
+                    <div class="aoi-capa-spec-header-actions"></div>
+                  </div>
+      
+                  
+                </section>
+      
+                <div class="table-wrap">
+                  <div class="table-scroll">
+                    <table class="table aoi-capa-spec-table" id="aoi-capa-spec-table-main">
+                      <thead></thead>
+                      <tbody></tbody>
+                    </table>
+                  </div>
+      
+                  <div id="aoi-capa-spec-pager" class="aoi-capa-spec-pager"></div>
+                </div>
+      
+                <div id="aoi-capa-spec-add-panel" class="aoi-capa-spec-add-panel" style="display:none;">
+                  <table class="aoi-capa-spec-add-table"> </table>
+      
+                  <div class="aoi-capa-spec-add-footer">
+                    <button id="aoi-capa-spec-add-confirm" class="btn btn-xs">新增</button>
+                    <button id="aoi-capa-spec-add-cancel" class="btn btn-xs btn-secondary">取消</button>
+                  </div>
+                </div>
+              </div>
+      
+              <!-- 右 2：Filter -->
+              <aside id="aoi-capa-spec-right" class="aoi-capa-spec-right card-sub">
+                <div class="aoi-capa-spec-filter-panel-title">
+                  <span>篩選</span>
+                  <span id="aoi-capa-spec-filter-count" class="aoi-capa-spec-filter-count"></span>
+                </div>
+      
+                <div class="aoi-capa-spec-filter-item">
+                  <div class="row inline">
+                    <input type="date" id="aoi-capa-spec-start">
+                    <span class="sep">–</span>
+                    <input type="date" id="aoi-capa-spec-end">
+                  </div>
+      
+                  <div class="aoi-capa-spec-filter-actions">
+                    <button id="aoi-capa-spec-apply" class="btn btn-xs">套用</button>
+                    <button id="aoi-capa-spec-clear" class="btn btn-xs btn-secondary">清空</button>
+                  </div>
+                </div>
+      
+                <div id="aoi-capa-spec-dynhosts"></div>
+      
+                <div class="aoi-capa-spec-filter-bottom-actions">
+                  <button id="aoi-capa-spec-add-btn" class="btn btn-xs">新增列</button>
+                </div>
+              </aside>
+            </div>
+          </section>
+          <!-- ===================== /AOI CAPA Spec Table ===================== -->
+          
+          <!-- ===================== Density專用資料下載頁面 ===================== -->
+          <section id="density-csv-download-root" class="card density-csv-root" style="display:none;">
+            <div class="density-csv-inner">
+              <section class="card-sub">
+                <div class="table-head">資料下載</div>
+          
+                <div class="row inline" style="gap:8px; align-items:center;">
+                  <label>日期</label>
+                  <input type="date" id="density-csv-start">
+                  <span>～</span>
+                  <input type="date" id="density-csv-end">
+          
+                  <button id="density-csv-preview-btn" class="btn btn-xs">查詢預覽</button>
+                  <button id="density-csv-download-btn" class="btn btn-xs">下載 CSV</button>
+                </div>
+          
+                <div id="density-csv-status" class="muted" style="margin-top:10px;"></div>
+          
+                <div class="table-wrap" style="margin-top:10px;">
+                  <table class="table" id="density-csv-preview-table">
+                    <thead></thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </section>
+            </div>
+          </section>
+          <!-- ===================== /Density專用資料下載頁面 ===================== -->
+          
+          
+          <!-- ===================== Density專用AVG即時計算頁面 ===================== -->
+          <section id="density-avg-download-root" class="card density-avg-root" style="display:none;">
+            <div class="density-avg-inner">
+              <section class="card-sub">
+                <div class="density-avg-head">
+                  <div class="density-avg-title-wrap">
+                    <div class="density-avg-title">Density平均值分析</div>
+                    <div class="density-avg-subtitle">density = defect count / total glass，以 07:30 為日界線</div>
+                  </div>
+                  <div id="density-avg-system-badge" class="density-avg-system-badge">-</div>
+                </div>
+          
+                <div class="density-avg-layout">
+                  <div class="density-avg-main">
+                    <div class="density-avg-toolbar">
+                      <label>日期</label>
+                      <input type="date" id="density-avg-start">
+                      <span class="density-avg-date-sep">～</span>
+                      <input type="date" id="density-avg-end">
+          
+                      <button id="density-avg-preview-btn" class="btn btn-xs">查詢預覽</button>
+                      <button id="density-avg-download-btn" class="btn btn-xs">下載 CSV</button>
+                      <button id="density-avg-clear-btn" class="btn btn-xs btn-secondary">清空</button>
+                    </div>
+          
+                    <div class="density-avg-metric-note">
+                      <b>計算公式：</b> density = sum(defect count) / sum(total glass)，日期以 07:30～隔日 07:30 計算。
+                    </div>
+          
+                    <div id="density-avg-status" class="muted"></div>
+          
+                    <div class="density-avg-summary-cards" id="density-avg-summary-cards"></div>
+          
+                    <div class="density-avg-table-wrap">
+                      <table class="table" id="density-avg-preview-table">
+                        <thead></thead>
+                        <tbody></tbody>
+                      </table>
+                    </div>
+          
+                    <div id="density-avg-pager"></div>
+                  </div>
+          
+                  <aside class="density-avg-side">
+                    <div class="density-avg-filter-title">
+                      <span>篩選</span>
+                      <span id="density-avg-filter-count"></span>
+                    </div>
+                  
+                    <div class="density-avg-filter-actions">
+                      <button id="density-avg-filter-apply-btn" class="btn btn-xs">套用</button>
+                    </div>
+                  
+                    <div id="density-avg-dynhosts"></div>
+                  </aside>
+                </div>
+              </section>
+            </div>
+          </section>
+          <!-- ===================== /Density專用AVG即時計算頁面 ===================== -->
+      
+        </main>  
+      </div>
+
+      <section class="l6a-track-page l6a-track-placeholder-page" data-l6a-page="project-management" style="display:none;"></section>
+      <section class="l6a-track-page l6a-track-placeholder-page" data-l6a-page="form-center" style="display:none;"></section>
+      <section class="l6a-track-page l6a-track-placeholder-page" data-l6a-page="abnormal-platform" style="display:none;"></section>
+      <section class="l6a-track-page l6a-track-placeholder-page" data-l6a-page="ai-smart-manufacturing-project" style="display:none;"></section>
+      <section class="l6a-track-page l6a-track-placeholder-page" data-l6a-page="equipment-quality" style="display:none;"></section>
+      <section class="l6a-track-page l6a-track-placeholder-page" data-l6a-page="product-quality" style="display:none;"></section>
+      <section class="l6a-track-page l6a-track-placeholder-page" data-l6a-page="tool-library" style="display:none;"></section>
+
+    </div>
+  </div>
+
+  <div class="toast"></div>
+</body>
+</html>

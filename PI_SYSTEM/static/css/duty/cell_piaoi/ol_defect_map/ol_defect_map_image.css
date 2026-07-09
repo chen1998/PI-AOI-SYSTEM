@@ -1,0 +1,275 @@
+/* ===================== OL Defect Map - Images / Gallery ===================== */
+
+
+.ol-defect-map-offset-img-group.no-images{
+  padding-top:8px;
+  padding-bottom:8px;
+}
+
+.ol-defect-map-offset-title{
+  font-weight:600;
+  margin-bottom:6px;
+  color:#e8e8e8;
+  flex:0 0 auto;
+}
+
+
+.ol-defect-map-offset-img-group.has-images .ol-defect-map-offset-img-grid::-webkit-scrollbar{
+  width:8px;
+}
+
+.ol-defect-map-offset-img-group.has-images .ol-defect-map-offset-img-grid::-webkit-scrollbar-thumb{
+  background:#303746;
+  border-radius:6px;
+}
+
+.ol-defect-map-offset-img-group.has-images .ol-defect-map-offset-img-grid::-webkit-scrollbar-track{
+  background:transparent;
+}
+
+
+/* defect tables image */
+.ol-defect-map-defect-table-wrap{
+  border:1px solid #e5e7eb;
+  border-radius:6px;
+  background:#1a1f28;
+  padding:8px;
+  margin:8px 0;
+}
+
+.ol-defect-map-defect-table-title .ol-defect-map-dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  display:inline-block;
+}
+
+.ol-defect-map-defect-table td.ol-defect-map-img-cell img{
+  width:84px;
+  height:84px;
+  object-fit:cover;
+  border-radius:4px;
+}
+
+/* gallery */
+#ol-defect-map-gallery-grid{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:12px;
+}
+
+.ol-defect-map-gallery-group{
+  border:1px solid #e5e7eb;
+  border-radius:6px;
+  background:#1a1f28;
+  padding:8px;
+  max-height:260px;
+  overflow-y:auto;
+}
+
+.ol-defect-map-gallery-title{
+  font-weight:600;
+  margin-bottom:6px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.ol-defect-map-gallery-title .ol-defect-map-dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  display:inline-block;
+}
+
+.ol-defect-map-img-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.ol-defect-map-gallery-item{
+  position:relative;
+  width:120px;
+  height:120px;
+  border-radius:4px;
+  overflow:hidden;
+  border:1px solid #2a2f3a;
+}
+
+.ol-defect-map-gallery-item img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+.ol-defect-map-gallery-item .ol-defect-map-idx-badge{
+  position:absolute;
+  left:6px;
+  top:6px;
+  padding:2px 6px;
+  font-size:12px;
+  font-weight:700;
+  background:rgba(0,0,0,.65);
+  color:#fff;
+  border-radius:10px;
+}
+
+/* =====================
+   Canvas 右側點擊影像區
+   每個 glass 容器獨立 overflow，避免勾選太多時被壓縮
+   ===================== */
+
+/* 右側整體影像容器：只負責排列每個 glass block，整體可垂直捲動 */
+#ol-defect-map-info-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 2px;
+}
+
+/* 每個 key / glass 的影像容器 */
+.ol-defect-map-offset-img-group {
+  flex: 0 0 auto;
+  width: 100%;
+  min-width: 0;
+  max-height: 260px;
+  min-height: 150px;
+  border: 1px solid #2b3240;
+  background: #0f1115;
+  border-radius: 8px;
+  padding: 10px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  overflow: hidden;
+}
+
+/* 有影像時，每個 group 保持固定可讀高度，內部自己捲 */
+.ol-defect-map-offset-img-group.has-images {
+  height: 150px;
+  max-height: 260px;
+}
+
+/* 無影像時不要佔太多高度 */
+.ol-defect-map-offset-img-group.no-images {
+  height: auto;
+  max-height: none;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+/* group 標題固定在上方，不參與壓縮 */
+.ol-defect-map-offset-title {
+  flex: 0 0 auto;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #fff;
+  margin-bottom: 2px;
+  word-break: break-all;
+}
+
+/* 每個 group 內部圖片區：獨立 overflow */
+.ol-defect-map-offset-img-grid {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+
+  display: grid;
+
+  /* 不再固定 4 欄，改成依寬度自動排，避免圖片被壓得太窄 */
+  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+
+  gap: 8px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+}
+
+/* group 內部 scrollbar */
+.ol-defect-map-offset-img-grid::-webkit-scrollbar {
+  width: 8px;
+}
+
+.ol-defect-map-offset-img-grid::-webkit-scrollbar-thumb {
+  background: #303746;
+  border-radius: 6px;
+}
+
+.ol-defect-map-offset-img-grid::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* 每張影像卡片給最小尺寸，避免縮到看不清楚 */
+.ol-defect-map-offset-img-grid .ol-defect-map-img-card {
+  margin: 0;
+  min-width: 76px;
+  height: 76px;
+
+  background: #10151d;
+  border: 1px solid #2b3240;
+  border-radius: 6px;
+  padding: 4px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* 圖片填滿卡片 */
+.ol-defect-map-offset-img-grid .ol-defect-map-img-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+}
+
+/* 無影像文字 */
+.ol-defect-map-offset-empty {
+  color: #9aa3ad;
+  font-size: 12px;
+  padding: 6px 2px;
+}
+
+.ol-defect-map-offset-group{
+  border:1px solid #e5e7eb;
+  border-radius:6px;
+  padding:8px;
+  background:#1a1f28;
+  max-height:220px;
+  overflow-y:auto;
+}
+
+.ol-defect-map-offset-group .ol-defect-map-offset-title{
+  font-weight:600;
+  margin-bottom:6px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.ol-defect-map-offset-group .ol-defect-map-offset-title .ol-defect-map-dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  display:inline-block;
+}
+
+.ol-defect-map-offset-defect-table td.ol-defect-map-img-cell.ol-defect-map-img-cell-xs img{
+  width:56px;
+  height:56px;
+  object-fit:cover;
+  border-radius:4px;
+}

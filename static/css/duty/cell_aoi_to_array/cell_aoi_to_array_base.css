@@ -1,0 +1,541 @@
+/* static/css/cell_aoi_to_array/cell_aoi_to_array_base.css */
+/* =========================================================
+   Cell AOI To Array App - Base / Layout / Filter / Summary / Chart
+   prefix: cell-aoi-to-array-
+   ========================================================= */
+
+   :root{
+    --cell-aoi-to-array-bg:#0f1115;
+    --cell-aoi-to-array-card:#171a20;
+    --cell-aoi-to-array-card-2:#1b2029;
+    --cell-aoi-to-array-line:#262a33;
+    --cell-aoi-to-array-line-2:#333a46;
+    --cell-aoi-to-array-fg:#e8e8e8;
+    --cell-aoi-to-array-muted:#9aa3ad;
+    --cell-aoi-to-array-soft:#cfd7df;
+    --cell-aoi-to-array-pri:#5cc1ff;
+    --cell-aoi-to-array-pri-2:#7fe7c8;
+    --cell-aoi-to-array-warn:#ffae57;
+    --cell-aoi-to-array-danger:#ff6b6b;
+    --cell-aoi-to-array-shadow:rgba(0,0,0,.24);
+  }
+  
+  #cell-aoi-to-array.cell-aoi-to-array-page{
+    width:100%;
+    min-height:100vh;
+    padding:12px;
+    color:var(--cell-aoi-to-array-fg);
+    background:var(--cell-aoi-to-array-bg);
+  }
+  
+  .cell-aoi-to-array-shell{
+    width:100%;
+    min-width:0;
+  }
+  
+  /* =========================================================
+     Top
+     ========================================================= */
+  
+  .cell-aoi-to-array-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    min-height:74px;
+  }
+  
+  .cell-aoi-to-array-top-left{
+    min-width:0;
+  }
+  
+  .cell-aoi-to-array-title{
+    margin:0;
+    color:#fff;
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:.4px;
+  }
+  
+  .cell-aoi-to-array-subtitle{
+    margin-top:4px;
+    color:var(--cell-aoi-to-array-muted);
+    font-size:13px;
+  }
+  
+  .cell-aoi-to-array-top-right{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:8px;
+    flex:0 0 auto;
+  }
+  
+  .cell-aoi-to-array-status-badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:28px;
+    padding:4px 10px;
+    border:1px solid #34507a;
+    border-radius:999px;
+    background:#243046;
+    color:#fff;
+    font-size:12px;
+    white-space:nowrap;
+  }
+  
+  /* =========================================================
+     Tabs
+     ========================================================= */
+  
+  .cell-aoi-to-array-tabs-card{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  
+  .cell-aoi-to-array-category-tabs,
+  .cell-aoi-to-array-feature-tabs{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  
+  .cell-aoi-to-array-feature-tabs{
+    min-height:0;
+    padding-top:8px;
+    border-top:1px solid rgba(255,255,255,.06);
+  }
+  
+  .cell-aoi-to-array-category-tab,
+  .cell-aoi-to-array-feature-tab{
+    border:1px solid #2a3140;
+    background:#1a1f28;
+    color:#d5deea;
+    border-radius:999px;
+    padding:7px 14px;
+    font-size:13px;
+    cursor:pointer;
+    transition:background-color .15s ease,border-color .15s ease,filter .15s ease,color .15s ease;
+  }
+  
+  .cell-aoi-to-array-category-tab:hover,
+  .cell-aoi-to-array-feature-tab:hover{
+    filter:brightness(1.15);
+    color:#fff;
+  }
+  
+  .cell-aoi-to-array-category-tab.active,
+  .cell-aoi-to-array-feature-tab.active{
+    background:#243046;
+    border-color:#34507a;
+    color:#fff;
+  }
+  
+  .cell-aoi-to-array-feature-tabs.is-empty{
+    display:none;
+  }
+  
+  /* =========================================================
+     Content / Cards
+     ========================================================= */
+  
+  .cell-aoi-to-array-content{
+    display:block;
+  }
+  
+  .cell-aoi-to-array-section{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  
+  .cell-aoi-to-array-info-card,
+  .cell-aoi-to-array-filter-card,
+  .cell-aoi-to-array-chart-card,
+  .cell-aoi-to-array-table-card,
+  .cell-aoi-to-array-sheet-card{
+    box-shadow:0 8px 18px var(--cell-aoi-to-array-shadow);
+  }
+  
+  /* =========================================================
+     Info
+     ========================================================= */
+  
+  .cell-aoi-to-array-info-card{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    align-items:center;
+    gap:16px;
+    min-height:48px;
+  }
+  
+  .cell-aoi-to-array-info-left{
+    min-width:0;
+    color:var(--cell-aoi-to-array-soft);
+    font-size:13px;
+    line-height:1.6;
+    text-align:left;
+    word-break:break-word;
+  }
+  
+  .cell-aoi-to-array-info-right{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    min-width:120px;
+  }
+  
+  .cell-aoi-to-array-reserved-link{
+    color:var(--cell-aoi-to-array-pri);
+    text-decoration:none;
+    font-size:13px;
+    border-bottom:1px dashed rgba(92,193,255,.55);
+    padding-bottom:2px;
+  }
+  
+  .cell-aoi-to-array-reserved-link:hover{
+    color:#fff;
+    border-bottom-color:#fff;
+  }
+  
+  /* =========================================================
+     Filter
+     ========================================================= */
+  
+  .cell-aoi-to-array-filter-row{
+    display:flex;
+    align-items:flex-end;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  
+  .cell-aoi-to-array-filter-group{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    min-width:150px;
+  }
+  
+  .cell-aoi-to-array-filter-date{
+    min-width:270px;
+  }
+  
+  .cell-aoi-to-array-sheet-group{
+    min-width:360px;
+    flex:1 1 420px;
+  }
+  
+  .cell-aoi-to-array-filter-label{
+    color:var(--cell-aoi-to-array-muted);
+    font-size:12px;
+    font-weight:600;
+  }
+  
+  .cell-aoi-to-array-date-range,
+  .cell-aoi-to-array-sheet-search{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  
+  .cell-aoi-to-array-date-sep{
+    color:var(--cell-aoi-to-array-muted);
+    font-size:13px;
+  }
+  
+  #cell-aoi-to-array input[type="date"],
+  #cell-aoi-to-array input[type="text"],
+  #cell-aoi-to-array select{
+    min-height:34px;
+    border:1px solid #2b3240;
+    border-radius:8px;
+    background:#afb2bb;
+    color:#111827;
+    padding:6px 9px;
+    outline:none;
+  }
+  
+  #cell-aoi-to-array input[type="date"]:focus,
+  #cell-aoi-to-array input[type="text"]:focus,
+  #cell-aoi-to-array select:focus{
+    border-color:var(--cell-aoi-to-array-pri);
+    box-shadow:0 0 0 2px rgba(92,193,255,.2);
+  }
+  
+  .cell-aoi-to-array-select{
+    min-width:160px;
+  }
+  
+  .cell-aoi-to-array-radio-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  
+  .cell-aoi-to-array-radio-item{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    min-height:30px;
+    padding:4px 8px;
+    border:1px solid #2a3140;
+    border-radius:999px;
+    background:#1a1f28;
+    color:#d5deea;
+    font-size:13px;
+    cursor:pointer;
+  }
+  
+  .cell-aoi-to-array-radio-item input{
+    margin:0;
+  }
+  
+  .cell-aoi-to-array-filter-actions{
+    display:flex;
+    align-items:flex-end;
+    justify-content:flex-end;
+    min-height:58px;
+  }
+  
+  .cell-aoi-to-array-apply-btn{
+    min-width:86px;
+    height:34px;
+    background:#243046;
+    border-color:#34507a;
+  }
+  
+  .cell-aoi-to-array-apply-btn.is-loading{
+    opacity:.75;
+    pointer-events:none;
+  }
+  
+  /* =========================================================
+     Summary Cards
+     ========================================================= */
+  
+  .cell-aoi-to-array-summary-cards{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:10px;
+  }
+  
+  .cell-aoi-to-array-summary-card{
+    position:relative;
+    overflow:hidden;
+    min-height:96px;
+    padding:14px;
+    border:1px solid var(--cell-aoi-to-array-line);
+    border-radius:10px;
+    background:linear-gradient(180deg,#181d26 0%,#151922 100%);
+    box-shadow:0 8px 18px var(--cell-aoi-to-array-shadow);
+  }
+  
+  .cell-aoi-to-array-summary-card::after{
+    content:"";
+    position:absolute;
+    right:-28px;
+    top:-28px;
+    width:88px;
+    height:88px;
+    border-radius:999px;
+    background:rgba(92,193,255,.08);
+  }
+  
+  .cell-aoi-to-array-summary-label{
+    color:var(--cell-aoi-to-array-muted);
+    font-size:13px;
+    font-weight:600;
+  }
+  
+  .cell-aoi-to-array-summary-value{
+    margin-top:8px;
+    color:#fff;
+    font-size:28px;
+    font-weight:750;
+    line-height:1.1;
+  }
+  
+  .cell-aoi-to-array-summary-sub{
+    margin-top:6px;
+    color:var(--cell-aoi-to-array-soft);
+    font-size:12px;
+  }
+  
+  /* =========================================================
+     Section Head
+     ========================================================= */
+  
+  .cell-aoi-to-array-section-head{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:10px;
+  }
+  
+  .cell-aoi-to-array-section-title{
+    margin:0;
+    color:#fff;
+    font-size:17px;
+    font-weight:700;
+  }
+  
+  .cell-aoi-to-array-section-subtitle{
+    margin:4px 0 0 0;
+    color:var(--cell-aoi-to-array-muted);
+    font-size:12px;
+  }
+  
+  /* =========================================================
+     Chart
+     ========================================================= */
+  
+  .cell-aoi-to-array-chart-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+  }
+  
+  .cell-aoi-to-array-chart-box{
+    min-height:280px;
+    border:1px solid var(--cell-aoi-to-array-line);
+    border-radius:10px;
+    background:#12161d;
+    overflow:hidden;
+  }
+  
+  .cell-aoi-to-array-chart-box-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    min-height:38px;
+    padding:8px 10px;
+    border-bottom:1px solid var(--cell-aoi-to-array-line);
+  }
+  
+  .cell-aoi-to-array-chart-box-title{
+    color:#fff;
+    font-size:13px;
+    font-weight:650;
+  }
+  
+  .cell-aoi-to-array-chart-box-sub{
+    color:var(--cell-aoi-to-array-muted);
+    font-size:11px;
+  }
+  
+  .cell-aoi-to-array-chart-canvas{
+    width:100%;
+    height:235px;
+    min-height:235px;
+  }
+  
+  /* =========================================================
+     Empty
+     ========================================================= */
+  
+  .cell-aoi-to-array-empty-section{
+    min-height:320px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  
+  .cell-aoi-to-array-empty-state{
+    min-height:110px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    color:var(--cell-aoi-to-array-muted);
+    text-align:center;
+  }
+  
+  .cell-aoi-to-array-empty-icon{
+    width:42px;
+    height:42px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid var(--cell-aoi-to-array-line-2);
+    border-radius:12px;
+    background:#12161d;
+    color:var(--cell-aoi-to-array-pri);
+    font-size:20px;
+  }
+  
+  /* =========================================================
+     Responsive
+     ========================================================= */
+  
+  @media (max-width:1400px){
+    .cell-aoi-to-array-chart-grid{
+      grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+  }
+  
+  @media (max-width:1100px){
+    .cell-aoi-to-array-info-card{
+      grid-template-columns:1fr;
+    }
+  
+    .cell-aoi-to-array-info-right{
+      justify-content:flex-start;
+    }
+  
+    .cell-aoi-to-array-summary-cards{
+      grid-template-columns:1fr;
+    }
+  
+    .cell-aoi-to-array-chart-grid{
+      grid-template-columns:1fr;
+    }
+  }
+  
+  @media (max-width:760px){
+    #cell-aoi-to-array.cell-aoi-to-array-page{
+      padding:8px;
+    }
+  
+    .cell-aoi-to-array-top{
+      align-items:flex-start;
+      flex-direction:column;
+    }
+  
+    .cell-aoi-to-array-filter-row{
+      align-items:stretch;
+    }
+  
+    .cell-aoi-to-array-filter-group,
+    .cell-aoi-to-array-filter-date,
+    .cell-aoi-to-array-sheet-group{
+      width:100%;
+      min-width:0;
+    }
+  
+    .cell-aoi-to-array-date-range,
+    .cell-aoi-to-array-sheet-search{
+      width:100%;
+    }
+  
+    #cell-aoi-to-array input[type="date"],
+    #cell-aoi-to-array input[type="text"],
+    #cell-aoi-to-array select{
+      width:100%;
+    }
+  
+    .cell-aoi-to-array-filter-actions{
+      width:100%;
+      min-height:0;
+    }
+  
+    .cell-aoi-to-array-apply-btn{
+      width:100%;
+    }
+  }

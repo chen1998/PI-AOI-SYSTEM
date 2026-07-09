@@ -1,0 +1,1219 @@
+/* ============================================================
+   AOI CAPA — Root
+   ============================================================ */
+   #aoi-capa-root {
+    grid-column: 1 / -1;
+    padding: 5px;
+    min-height: 0;
+  }
+  
+  .aoi-capa-root-section {
+    min-height: 0;
+  }
+  
+  /* ============================================================
+     上半：左 8 / 右 2
+     ============================================================ */
+  .aoi-capa-grid-82 {
+    display: grid;
+    grid-template-columns: minmax(0, 8fr) minmax(280px, 1.8fr);
+    gap: 8px;
+    align-items: stretch;
+    min-height: 0;
+    height: 520px;
+  }
+  
+  /* 左側：info + charts */
+  .aoi-capa-left {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 6px;
+    min-height: 0;
+  }
+  
+  /* 左上 info 卡片 */
+  #aoi-capa-info {
+    border: 1px solid var(--line);
+    background: var(--card);
+    border-radius: 10px;
+    padding: 8px;
+    min-height: 64px;
+  }
+  
+  /* 左下 chart 卡片 */
+  #aoi-capa-charts {
+    border: 1px solid var(--line);
+    background: var(--card);
+    border-radius: 10px;
+    padding: 8px;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* chart 容器一定要吃滿 */
+  #aoi-capa-facet {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
+  }
+  
+  /* ============================================================
+     Info
+     ============================================================ */
+  .aoi-capa-info-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  
+  .aoi-capa-info-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+  }
+  
+  .aoi-capa-info-sub {
+    margin: 0;
+    font-size: 12px;
+    opacity: 0.85;
+  }
+  
+  .aoi-capa-tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  
+  /* ============================================================
+     右上 subtabs 統一外觀
+     ============================================================ */
+  #aoi-capa-subtabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  
+  #aoi-capa-subtabs .tab-btn {
+    background: #1a1f28;
+    color: #d5deea;
+    border: 1px solid #2a3140;
+    border-radius: 20px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  
+  #aoi-capa-subtabs .tab-btn.active {
+    background: #243046;
+    border-color: #34507a;
+    color: #fff;
+  }
+  
+  /* ============================================================
+     右側：filter + target/spec
+     ============================================================ */
+  #aoi-capa-right {
+    border: 1px solid #262c3b;
+    background: radial-gradient(circle at 0 0, #1c2333, #0b0f18);
+    border-radius: 10px;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+    overflow: hidden;
+  }
+  
+  .aoi-capa-right-top {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .aoi-capa-right-bottom {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.15);
+  }
+  
+  .aoi-capa-filter-panel-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #e6e9ef;
+  }
+  
+  .aoi-capa-filter-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .aoi-capa-filter-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  
+  #aoi-capa-start,
+  #aoi-capa-end {
+    color: #d8d5d5;
+    background-color: #19181f;
+    border: 1px solid #2b3240;
+    border-radius: 6px;
+    padding: 4px 6px;
+  }
+  
+  #aoi-capa-start::-webkit-calendar-picker-indicator,
+  #aoi-capa-end::-webkit-calendar-picker-indicator {
+    filter: invert(0);
+  }
+  
+  /* dynhosts 區 */
+  #aoi-capa-dynhosts {
+    min-height: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  /* ============================================================
+     MultiDD 外觀
+     ============================================================ */
+  #aoi-capa-right .multi-dd-host {
+    width: 100%;
+  }
+  
+  #aoi-capa-right .multi-dd {
+    width: 100%;
+    position: relative;
+  }
+  
+  #aoi-capa-right .multi-dd-btn {
+    width: 100%;
+    background: #151922;
+    border: 1px solid #2b3240;
+    border-radius: 6px;
+    padding: 5px 9px;
+    font-size: 13px;
+    text-align: left;
+    cursor: pointer;
+    color: #e6e9ef;
+  }
+  
+  #aoi-capa-right .multi-dd.open .multi-dd-btn {
+    filter: brightness(1.08);
+  }
+  
+  #aoi-capa-right .multi-dd-list {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 6px);
+    background: #0f1115;
+    border: 1px solid #2b3240;
+    border-radius: 8px;
+    padding: 8px;
+    z-index: 50;
+    max-height: 260px;
+    overflow: auto;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  }
+  
+  #aoi-capa-right .multi-dd-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 2px;
+  }
+  
+  #aoi-capa-right .multi-dd-footer {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 6px;
+  }
+  
+  #aoi-capa-right .multi-dd-search {
+    width: 100%;
+    margin-bottom: 6px;
+    background: #151922;
+    border: 1px solid #2b3240;
+    border-radius: 6px;
+    padding: 6px 8px;
+    color: #e6e9ef;
+  }
+  
+  #aoi-capa-right select[multiple] {
+    width: 100%;
+    min-height: 96px;
+    background: #151922;
+    border: 1px solid #2b3240;
+    border-radius: 6px;
+    padding: 4px;
+    color: #cfd6e6;
+    margin-bottom: 10px;
+  }
+  
+  /* ============================================================
+     右下 Target / Spec 卡片
+     ============================================================ */
+  .aoi-capa-target-panel {
+    border: 1px solid #262c3b;
+    background: radial-gradient(circle at 0 0, #171c29, #0a0d14);
+    border-radius: 8px;
+    padding: 8px;
+    min-height: 180px;
+  }
+  
+  .aoi-capa-target-panel-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .aoi-capa-target-panel-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #e6e9ef;
+  }
+  
+  .aoi-capa-target-panel-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 4px;
+  }
+  
+  .aoi-capa-target-panel-body {
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 300px;
+    height: 200px;
+  }
+  
+  .aoi-capa-target-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    color: #e6e9ef;
+    table-layout: fixed;
+  }
+  
+  .aoi-capa-target-table th,
+  .aoi-capa-target-table td {
+    padding: 4px 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    text-align: left;
+    vertical-align: middle;
+    font-size: 12px;
+  }
+  
+  .aoi-capa-target-table tr:last-child th,
+  .aoi-capa-target-table tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .aoi-capa-target-table th:first-child,
+  .aoi-capa-target-table td:first-child {
+    width: 70px;
+    min-width: 70px;
+    max-width: 70px;
+  }
+  
+  .aoi-capa-target-table th:nth-child(2),
+  .aoi-capa-target-table td:nth-child(2) {
+    width: 95px;
+    min-width: 95px;
+    max-width: 95px;
+  }
+  
+  .aoi-capa-target-table th:last-child,
+  .aoi-capa-target-table td:last-child {
+    width: 75px;
+    min-width: 75px;
+    max-width: 75px;
+  }
+  
+  .aoi-capa-target-table:empty::before {
+    content: "尚無資料";
+    display: block;
+    padding: 8px 6px;
+    color: #8b93a7;
+  }
+  
+  /* ============================================================
+     下半：table + day detail
+     ============================================================ */
+  #aoi-capa-table-wrap {
+    margin-top: 12px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    border-radius: 10px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  
+  .aoi-capa-table-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 8fr) minmax(240px, 1.8fr);
+    gap: 8px;
+    min-height: 0;
+  }
+  
+  /* 左：主表格 */
+  .aoi-capa-table-main {
+    border: 1px solid #262c3b;
+    background: #10151f;
+    border-radius: 10px;
+    padding: 8px;
+    min-width: 0;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  
+  .aoi-capa-table-head {
+    display: flex;
+    align-items: center;
+    min-height: 30px;
+    margin-bottom: 6px;
+    flex: 0 0 auto;
+  }
+  
+  .aoi-capa-table-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #e6e9ef;
+  }
+  
+  /* 關鍵：table body 可捲動，thead 固定 */
+  #aoi-capa-table-wrap .table-wrap {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: auto;
+  }
+  
+  #aoi-capa-table {
+    width: 100%;
+    background: #0f131a;
+    color: #e6e9ef;
+    border-collapse: collapse;
+  }
+  
+  #aoi-capa-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #0f131a;
+    font-weight: 600;
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+  
+  #aoi-capa-table tbody td,
+  #aoi-capa-table tbody th {
+    padding: 8px 10px;
+    font-size: 12px;
+    vertical-align: middle;
+  }
+  
+  /* Day table */
+  #aoi-capa-table.day {
+    table-layout: auto;
+  }
+  
+  #aoi-capa-table.day td,
+  #aoi-capa-table.day th {
+    background: #10141b;
+  }
+  
+  /* ============================================================
+     Hourly table：固定欄寬版本
+     ============================================================ */
+  #aoi-capa-table.hourly {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  
+  #aoi-capa-table.hourly th,
+  #aoi-capa-table.hourly td {
+    vertical-align: middle;
+    text-align: center;
+    padding: 6px 8px;
+    box-sizing: border-box;
+    font-size: 12px;
+    white-space: nowrap !important;
+    background: #141927;
+  }
+  
+  /* 中間 24 小時欄 */
+  #aoi-capa-table.hourly th:not(:first-child):not(:last-child),
+  #aoi-capa-table.hourly td:not(:first-child):not(:last-child) {
+    width: 60px;
+    min-width: 60px;
+    max-width: 60px;
+  }
+  
+  /* 第一欄：AOI + 日期 / row label */
+  #aoi-capa-table.hourly th:first-child,
+  #aoi-capa-table.hourly td:first-child {
+    width: 140px;
+    min-width: 140px;
+    max-width: 140px;
+    text-align: left !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 600;
+  }
+  
+  /* 最後一欄：target_count / total */
+  #aoi-capa-table.hourly th:last-child,
+  #aoi-capa-table.hourly td:last-child {
+    width: 90px;
+    min-width: 90px;
+    max-width: 90px;
+    white-space: nowrap !important;
+    font-weight: 600;
+  }
+  
+  /* 表頭固定 */
+  #aoi-capa-table.hourly thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #0f131a;
+    font-size: 12px;
+  }
+  
+  /* ============================================================
+     右：Day Detail
+     ============================================================ */
+  #aoi-capa-day-detail {
+    border: 1px solid #262c3b;
+    background: radial-gradient(circle at 0 0, #1c2333, #0b0f18);
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 13px;
+    color: #e6e9ef;
+    display: flex;
+    flex-direction: column;
+    min-height: 300px;
+  }
+  
+  .aoi-capa-day-detail-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  
+  .aoi-capa-day-detail-title {
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.03em;
+  }
+  
+  .aoi-capa-day-detail-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 4px;
+  }
+  
+  .aoi-capa-detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 12px;
+    color: #e6e9ef;
+    margin-top: 2px;
+  }
+  
+  .aoi-capa-detail-table th,
+  .aoi-capa-detail-table td {
+    padding: 4px 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  
+  .aoi-capa-detail-table tr:last-child th,
+  .aoi-capa-detail-table tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .aoi-capa-detail-table th {
+    width: 96px;
+    white-space: nowrap;
+    text-align: right;
+    font-weight: 500;
+    color: #9ca3b8;
+    font-size: 12px;
+  }
+  
+  .aoi-capa-detail-table td {
+    padding-left: 8px;
+    color: #e6e9ef;
+    vertical-align: top;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 12px;
+  }
+  
+  .aoi-capa-detail-table:empty::before {
+    content: "尚未選擇資料";
+    display: block;
+    padding: 8px 6px;
+    color: #8b93a7;
+  }
+  
+  /* ============================================================
+     表格換行限制在 aoi-capa 範圍
+     ============================================================ */
+  #aoi-capa-root table:not(.hourly) th,
+  #aoi-capa-root table:not(.hourly) td {
+    white-space: pre-line !important;
+  }
+  
+  /* ============================================================
+     Responsive
+     ============================================================ */
+  @media (max-width: 1280px) {
+    .aoi-capa-table-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  @media (max-width: 1100px) {
+    .aoi-capa-grid-82 {
+      grid-template-columns: 1fr;
+      height: auto;
+    }
+  
+    #aoi-capa-right {
+      min-height: 320px;
+    }
+  }
+/* ============================================================
+   AOI CAPA — Root
+   ============================================================ */
+   #aoi-capa-root {
+    grid-column: 1 / -1;
+    padding: 5px;
+    min-height: 0;
+  }
+  
+  .aoi-capa-root-section {
+    min-height: 0;
+  }
+  
+  /* ============================================================
+     上半：左 8 / 右 2
+     ============================================================ */
+  .aoi-capa-grid-82 {
+    display: grid;
+    grid-template-columns: minmax(0, 8fr) minmax(280px, 1.8fr);
+    gap: 8px;
+    align-items: stretch;
+    min-height: 0;
+    height: 520px;
+  }
+  
+  /* 左側：info + charts */
+  .aoi-capa-left {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 6px;
+    min-height: 0;
+  }
+  
+  /* 左上 info 卡片 */
+  #aoi-capa-info {
+    border: 1px solid var(--line);
+    background: var(--card);
+    border-radius: 10px;
+    padding: 8px;
+    min-height: 64px;
+  }
+  
+  /* 左下 chart 卡片 */
+  #aoi-capa-charts {
+    border: 1px solid var(--line);
+    background: var(--card);
+    border-radius: 10px;
+    padding: 8px;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* chart 容器一定要吃滿 */
+  #aoi-capa-facet {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
+  }
+  
+  /* ============================================================
+     Info
+     ============================================================ */
+  .aoi-capa-info-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  
+  .aoi-capa-info-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+  }
+  
+  .aoi-capa-info-sub {
+    margin: 0;
+    font-size: 12px;
+    opacity: 0.85;
+  }
+  
+  .aoi-capa-tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  
+  /* ============================================================
+     右上 subtabs 統一外觀
+     ============================================================ */
+  #aoi-capa-subtabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  
+  #aoi-capa-subtabs .tab-btn {
+    background: #1a1f28;
+    color: #d5deea;
+    border: 1px solid #2a3140;
+    border-radius: 20px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  
+  #aoi-capa-subtabs .tab-btn.active {
+    background: #243046;
+    border-color: #34507a;
+    color: #fff;
+  }
+  
+  /* ============================================================
+     右側：filter + target/spec
+     ============================================================ */
+  #aoi-capa-right {
+    border: 1px solid #262c3b;
+    background: radial-gradient(circle at 0 0, #1c2333, #0b0f18);
+    border-radius: 10px;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+    overflow: hidden;
+  }
+  
+  .aoi-capa-right-top {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .aoi-capa-right-bottom {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.15);
+  }
+  
+  .aoi-capa-filter-panel-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #e6e9ef;
+  }
+  
+  .aoi-capa-filter-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .aoi-capa-filter-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  
+  #aoi-capa-start,
+  #aoi-capa-end {
+    color: #d8d5d5;
+    background-color: #19181f;
+    border: 1px solid #2b3240;
+    border-radius: 6px;
+    padding: 4px 6px;
+  }
+  
+  #aoi-capa-start::-webkit-calendar-picker-indicator,
+  #aoi-capa-end::-webkit-calendar-picker-indicator {
+    filter: invert(0);
+  }
+  
+  /* dynhosts 區 */
+  #aoi-capa-dynhosts {
+    min-height: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  /* ============================================================
+     MultiDD 外觀
+     ============================================================ */
+  #aoi-capa-right .multi-dd-host {
+    width: 100%;
+  }
+  
+  #aoi-capa-right .multi-dd {
+    width: 100%;
+    position: relative;
+  }
+  
+  #aoi-capa-right .multi-dd-btn {
+    width: 100%;
+    background: #151922;
+    border: 1px solid #2b3240;
+    border-radius: 6px;
+    padding: 5px 9px;
+    font-size: 13px;
+    text-align: left;
+    cursor: pointer;
+    color: #e6e9ef;
+  }
+  
+  #aoi-capa-right .multi-dd.open .multi-dd-btn {
+    filter: brightness(1.08);
+  }
+  
+  #aoi-capa-right .multi-dd-list {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 6px);
+    background: #0f1115;
+    border: 1px solid #2b3240;
+    border-radius: 8px;
+    padding: 8px;
+    z-index: 50;
+    max-height: 260px;
+    overflow: auto;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  }
+  
+  #aoi-capa-right .multi-dd-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 2px;
+  }
+  
+  #aoi-capa-right .multi-dd-footer {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 6px;
+  }
+  
+  #aoi-capa-right .multi-dd-search {
+    width: 100%;
+    margin-bottom: 6px;
+    background: #151922;
+    border: 1px solid #2b3240;
+    border-radius: 6px;
+    padding: 6px 8px;
+    color: #e6e9ef;
+  }
+  
+  #aoi-capa-right select[multiple] {
+    width: 100%;
+    min-height: 96px;
+    background: #151922;
+    border: 1px solid #2b3240;
+    border-radius: 6px;
+    padding: 4px;
+    color: #cfd6e6;
+    margin-bottom: 10px;
+  }
+  
+  /* ============================================================
+     右下 Target / Spec 卡片
+     ============================================================ */
+  .aoi-capa-target-panel {
+    border: 1px solid #262c3b;
+    background: radial-gradient(circle at 0 0, #171c29, #0a0d14);
+    border-radius: 8px;
+    padding: 8px;
+    min-height: 180px;
+  }
+  
+  .aoi-capa-target-panel-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .aoi-capa-target-panel-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #e6e9ef;
+  }
+  
+  .aoi-capa-target-panel-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 4px;
+  }
+  
+  .aoi-capa-target-panel-body {
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 300px;
+    height: 200px;
+  }
+  
+  .aoi-capa-target-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    color: #e6e9ef;
+    table-layout: fixed;
+  }
+  
+  .aoi-capa-target-table th,
+  .aoi-capa-target-table td {
+    padding: 4px 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    text-align: left;
+    vertical-align: middle;
+    font-size: 12px;
+  }
+  
+  .aoi-capa-target-table tr:last-child th,
+  .aoi-capa-target-table tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .aoi-capa-target-table th:first-child,
+  .aoi-capa-target-table td:first-child {
+    width: 70px;
+    min-width: 70px;
+    max-width: 70px;
+  }
+  
+  .aoi-capa-target-table th:nth-child(2),
+  .aoi-capa-target-table td:nth-child(2) {
+    width: 95px;
+    min-width: 95px;
+    max-width: 95px;
+  }
+  
+  .aoi-capa-target-table th:last-child,
+  .aoi-capa-target-table td:last-child {
+    width: 75px;
+    min-width: 75px;
+    max-width: 75px;
+  }
+  
+  .aoi-capa-target-table:empty::before {
+    content: "尚無資料";
+    display: block;
+    padding: 8px 6px;
+    color: #8b93a7;
+  }
+  
+  /* ============================================================
+     下半：table + day detail
+     ============================================================ */
+  #aoi-capa-table-wrap {
+    margin-top: 12px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    border-radius: 10px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  
+  .aoi-capa-table-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 8fr) minmax(240px, 1.8fr);
+    gap: 8px;
+    min-height: 0;
+  }
+  
+  /* 左：主表格 */
+  .aoi-capa-table-main {
+    border: 1px solid #262c3b;
+    background: #10151f;
+    border-radius: 10px;
+    padding: 8px;
+    min-width: 0;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  
+  .aoi-capa-table-head {
+    display: flex;
+    align-items: center;
+    min-height: 30px;
+    margin-bottom: 6px;
+    flex: 0 0 auto;
+  }
+  
+  .aoi-capa-table-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #e6e9ef;
+  }
+  
+  /* 關鍵：table body 可捲動，thead 固定 */
+  #aoi-capa-table-wrap .table-wrap {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: auto;
+  }
+  
+  #aoi-capa-table {
+    width: 100%;
+    background: #0f131a;
+    color: #e6e9ef;
+    border-collapse: collapse;
+  }
+  
+  #aoi-capa-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #0f131a;
+    font-weight: 600;
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+  
+  #aoi-capa-table tbody td,
+  #aoi-capa-table tbody th {
+    padding: 8px 10px;
+    font-size: 12px;
+    vertical-align: middle;
+  }
+  
+  /* Day table */
+  #aoi-capa-table.day {
+    table-layout: auto;
+  }
+  
+  #aoi-capa-table.day td,
+  #aoi-capa-table.day th {
+    background: #10141b;
+  }
+  
+  /* ============================================================
+     Hourly table：固定欄寬版本
+     ============================================================ */
+  #aoi-capa-table.hourly {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  
+  #aoi-capa-table.hourly th,
+  #aoi-capa-table.hourly td {
+    vertical-align: middle;
+    text-align: center;
+    padding: 6px 8px;
+    box-sizing: border-box;
+    font-size: 12px;
+    white-space: nowrap !important;
+    background: #141927;
+  }
+  
+  /* 中間 24 小時欄 */
+  #aoi-capa-table.hourly th:not(:first-child):not(:last-child),
+  #aoi-capa-table.hourly td:not(:first-child):not(:last-child) {
+    width: 60px;
+    min-width: 60px;
+    max-width: 60px;
+  }
+  
+  /* 第一欄：AOI + 日期 / row label */
+  #aoi-capa-table.hourly th:first-child,
+  #aoi-capa-table.hourly td:first-child {
+    width: 140px;
+    min-width: 140px;
+    max-width: 140px;
+    text-align: left !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 600;
+  }
+  
+  /* 最後一欄：target_count / total */
+  #aoi-capa-table.hourly th:last-child,
+  #aoi-capa-table.hourly td:last-child {
+    width: 90px;
+    min-width: 90px;
+    max-width: 90px;
+    white-space: nowrap !important;
+    font-weight: 600;
+  }
+  
+  /* 表頭固定 */
+  #aoi-capa-table.hourly thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #0f131a;
+    font-size: 12px;
+  }
+  
+  /* ============================================================
+     右：Day Detail
+     ============================================================ */
+  #aoi-capa-day-detail {
+    border: 1px solid #262c3b;
+    background: radial-gradient(circle at 0 0, #1c2333, #0b0f18);
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 13px;
+    color: #e6e9ef;
+    display: flex;
+    flex-direction: column;
+    min-height: 300px;
+  }
+  
+  .aoi-capa-day-detail-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  
+  .aoi-capa-day-detail-title {
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.03em;
+  }
+  
+  .aoi-capa-day-detail-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 4px;
+  }
+  
+  .aoi-capa-detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 12px;
+    color: #e6e9ef;
+    margin-top: 2px;
+  }
+  
+  .aoi-capa-detail-table th,
+  .aoi-capa-detail-table td {
+    padding: 4px 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  
+  .aoi-capa-detail-table tr:last-child th,
+  .aoi-capa-detail-table tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .aoi-capa-detail-table th {
+    width: 96px;
+    white-space: nowrap;
+    text-align: right;
+    font-weight: 500;
+    color: #9ca3b8;
+    font-size: 12px;
+  }
+  
+  .aoi-capa-detail-table td {
+    padding-left: 8px;
+    color: #e6e9ef;
+    vertical-align: top;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 12px;
+  }
+  
+  .aoi-capa-detail-table:empty::before {
+    content: "尚未選擇資料";
+    display: block;
+    padding: 8px 6px;
+    color: #8b93a7;
+  }
+  
+  /* ============================================================
+     表格換行限制在 aoi-capa 範圍
+     ============================================================ */
+  #aoi-capa-root table:not(.hourly) th,
+  #aoi-capa-root table:not(.hourly) td {
+    white-space: pre-line !important;
+  }
+  
+  /* ============================================================
+     Responsive
+     ============================================================ */
+  @media (max-width: 1280px) {
+    .aoi-capa-table-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  @media (max-width: 1100px) {
+    .aoi-capa-grid-82 {
+      grid-template-columns: 1fr;
+      height: auto;
+    }
+  
+    #aoi-capa-right {
+      min-height: 320px;
+    }
+  }
+    

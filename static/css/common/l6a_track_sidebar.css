@@ -1,0 +1,403 @@
+/* static/css/common/l6a_track_sidebar.css */
+/* =========================================================
+   L6A Track Sidebar
+   prefix: l6a-track-
+   ========================================================= */
+
+   :root{
+    --l6a-track-sidebar-open-width: 10vw;
+    --l6a-track-sidebar-closed-width: 40px;
+    --l6a-track-sidebar-min-open-width: 240px;
+    --l6a-track-sidebar-max-open-width: 360px;
+  
+    --l6a-track-bg: #0f1115;
+    --l6a-track-panel: #12161d;
+    --l6a-track-border: #262a33;
+    --l6a-track-border-2: #303846;
+    --l6a-track-fg: #e8e8e8;
+    --l6a-track-muted: #9aa3ad;
+    --l6a-track-active-bg: #243046;
+    --l6a-track-active-border: #34507a;
+    --l6a-track-hover-bg: #1d2430;
+  }
+  
+  /* =========================================================
+     Base page lock
+     ========================================================= */
+  html,
+  body{
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden !important;
+  }
+  
+  /* =========================================================
+     Shell：左側目錄 + 右側內容
+     ========================================================= */
+  #l6a-track-shell.l6a-track-shell{
+    width: 100vw !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+  
+    display: grid !important;
+    grid-template-columns:
+      clamp(
+        var(--l6a-track-sidebar-min-open-width),
+        var(--l6a-track-sidebar-open-width),
+        var(--l6a-track-sidebar-max-open-width)
+      )
+      minmax(0, 1fr) !important;
+  
+    background: var(--l6a-track-bg);
+    color: var(--l6a-track-fg);
+  
+    overflow: hidden !important;
+    transition: grid-template-columns .22s ease;
+  }
+  
+  #l6a-track-shell.l6a-track-shell.l6a-track-sidebar-open{
+    grid-template-columns:
+      clamp(
+        var(--l6a-track-sidebar-min-open-width),
+        var(--l6a-track-sidebar-open-width),
+        var(--l6a-track-sidebar-max-open-width)
+      )
+      minmax(0, 1fr) !important;
+  }
+  
+  #l6a-track-shell.l6a-track-shell.l6a-track-sidebar-closed{
+    grid-template-columns:
+      var(--l6a-track-sidebar-closed-width)
+      minmax(0, 1fr) !important;
+  }
+  
+  /* =========================================================
+     Sidebar
+     ========================================================= */
+  #l6a-track-sidebar.l6a-track-sidebar{
+    width: 100% !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+  
+    display: block !important;
+  
+    background: linear-gradient(180deg, #121720 0%, #0f131a 100%);
+    border-right: 1px solid var(--l6a-track-border);
+  
+    overflow: hidden !important;
+    z-index: 50;
+  }
+  
+  #l6a-track-sidebar-inner.l6a-track-sidebar-inner{
+    width: 100%;
+    height: 100%;
+  
+    display: flex !important;
+    flex-direction: column !important;
+  
+    min-width: 0;
+    overflow: hidden;
+  }
+  
+  /* =========================================================
+     Header
+     ========================================================= */
+  .l6a-track-sidebar-header{
+    flex: 0 0 auto;
+    padding: 16px 14px 12px 14px;
+    border-bottom: 1px solid var(--l6a-track-border);
+  }
+  
+  .l6a-track-title{
+    font-size: 19px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: .3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* =========================================================
+     Nav
+     ========================================================= */
+  .l6a-track-nav{
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 12px 10px 14px 10px;
+  }
+  
+  .l6a-track-nav-section{
+    margin-bottom: 16px;
+  }
+  
+  .l6a-track-section-title{
+    width: 100%;
+    border: 0;
+    background: transparent;
+    color: var(--l6a-track-muted);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-align: left;
+    padding: 6px 8px;
+    cursor: default;
+    white-space: nowrap;
+  }
+  
+  .l6a-track-menu{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .l6a-track-menu-group{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .l6a-track-menu-item,
+  .l6a-track-submenu-item{
+    width: 100%;
+    min-height: 34px;
+  
+    display: block;
+  
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+  
+    color: #d5deea;
+    font-size: 14px;
+    text-align: left;
+  
+    padding: 7px 10px;
+  
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .l6a-track-menu-item:hover,
+  .l6a-track-submenu-item:hover{
+    background: var(--l6a-track-hover-bg);
+    border-color: var(--l6a-track-border-2);
+    color: #fff;
+  }
+  
+  .l6a-track-menu-item.active,
+  .l6a-track-submenu-item.active{
+    background: var(--l6a-track-active-bg);
+    border-color: var(--l6a-track-active-border);
+    color: #fff;
+  }
+  
+  .l6a-track-has-children{
+    position: relative;
+    color: #cfd7df;
+    padding-right: 28px;
+  }
+  
+  .l6a-track-has-children::after{
+    content: "▾";
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--l6a-track-muted);
+  }
+  
+  .l6a-track-submenu{
+    margin-left: 12px;
+    padding-left: 10px;
+    border-left: 1px solid var(--l6a-track-border-2);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .l6a-track-submenu .l6a-track-submenu{
+    margin-left: 10px;
+  }
+  
+  /* =========================================================
+     Footer / Toggle
+     ========================================================= */
+  .l6a-track-sidebar-footer{
+    flex: 0 0 auto;
+    padding: 10px;
+    border-top: 1px solid var(--l6a-track-border);
+  }
+  
+  #l6a-track-toggle-sidebar.l6a-track-toggle-sidebar{
+    width: 100%;
+    height: 34px;
+  
+    border: 1px solid #333a46;
+    border-radius: 8px;
+    background: #1a1f28;
+  
+    color: #d5deea;
+    cursor: pointer;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  
+    white-space: nowrap;
+  }
+  
+  #l6a-track-toggle-sidebar.l6a-track-toggle-sidebar:hover{
+    filter: brightness(1.12);
+  }
+  
+  .l6a-track-toggle-icon{
+    font-size: 18px;
+    line-height: 1;
+  }
+  
+  .l6a-track-toggle-text{
+    font-size: 13px;
+  }
+  
+  /* =========================================================
+     Right Content
+     ========================================================= */
+  #l6a-track-content.l6a-track-content{
+    height: 100vh !important;
+    min-width: 0 !important;
+  
+    overflow: auto !important;
+    background: var(--l6a-track-bg);
+  }
+  
+  /* 覆蓋 base1.css 的 #app */
+  #l6a-track-content > #app,
+  #l6a-track-content #app{
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 100vh;
+  
+    margin: 0 !important;
+    padding: 12px !important;
+  }
+  
+  .l6a-track-page{
+    min-width: 0;
+  }
+  
+  .l6a-track-page.active{
+    display: block;
+  }
+  
+  .l6a-track-placeholder-page{
+    padding: 12px;
+  }
+  
+  /* =========================================================
+     Closed State
+     ========================================================= */
+  #l6a-track-shell.l6a-track-sidebar-closed .l6a-track-sidebar-header,
+  #l6a-track-shell.l6a-track-sidebar-closed .l6a-track-nav{
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+  }
+  
+  #l6a-track-shell.l6a-track-sidebar-closed .l6a-track-sidebar-footer{
+    height: 100%;
+    padding: 0;
+    border-top: 0;
+  
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+  }
+  
+  #l6a-track-shell.l6a-track-sidebar-closed #l6a-track-toggle-sidebar{
+    width: var(--l6a-track-sidebar-closed-width);
+    height: 100%;
+  
+    border-radius: 0;
+    border: 0;
+  
+    writing-mode: vertical-rl;
+    gap: 8px;
+  }
+  
+  #l6a-track-shell.l6a-track-sidebar-closed .l6a-track-toggle-icon{
+    transform: rotate(180deg);
+  }
+  
+  /* =========================================================
+     Closed + hover temporary open
+     ========================================================= */
+  #l6a-track-shell.l6a-track-sidebar-closed.l6a-track-sidebar-hover-open{
+    grid-template-columns:
+      clamp(
+        var(--l6a-track-sidebar-min-open-width),
+        var(--l6a-track-sidebar-open-width),
+        var(--l6a-track-sidebar-max-open-width)
+      )
+      minmax(0, 1fr) !important;
+  }
+  
+  #l6a-track-shell.l6a-track-sidebar-closed.l6a-track-sidebar-hover-open .l6a-track-sidebar-header,
+  #l6a-track-shell.l6a-track-sidebar-closed.l6a-track-sidebar-hover-open .l6a-track-nav{
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
+  }
+  
+  #l6a-track-shell.l6a-track-sidebar-closed.l6a-track-sidebar-hover-open .l6a-track-sidebar-footer{
+    height: auto;
+    padding: 10px;
+    border-top: 1px solid var(--l6a-track-border);
+    display: block;
+  }
+  
+  #l6a-track-shell.l6a-track-sidebar-closed.l6a-track-sidebar-hover-open #l6a-track-toggle-sidebar{
+    width: 100%;
+    height: 34px;
+  
+    border: 1px solid #333a46;
+    border-radius: 8px;
+  
+    writing-mode: horizontal-tb;
+  }
+  
+  #l6a-track-shell.l6a-track-sidebar-closed.l6a-track-sidebar-hover-open .l6a-track-toggle-icon{
+    transform: none;
+  }
+  
+  /* =========================================================
+     Responsive
+     ========================================================= */
+  @media (max-width: 1400px){
+    #top-container{
+      grid-template-columns: 380px minmax(220px, 1fr) 380px;
+    }
+  }
+  
+  @media (max-width: 1200px){
+    :root{
+      --l6a-track-sidebar-open-width: 260px;
+      --l6a-track-sidebar-min-open-width: 220px;
+      --l6a-track-sidebar-max-open-width: 300px;
+    }
+  
+    #top-container{
+      grid-template-columns: minmax(260px, 1fr);
+    }
+  
+    .top-left,
+    .top-center,
+    .top-right{
+      justify-content: center;
+    }
+  }

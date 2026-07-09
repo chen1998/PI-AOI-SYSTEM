@@ -1,0 +1,318 @@
+/* static/css/cell_aoi_to_array/cell_aoi_to_array_table.css */
+/* =========================================================
+   Cell AOI To Array - Table / Pager / Filter Dropdown
+   ========================================================= */
+
+/* =========================================================
+   Main Table
+   ========================================================= */
+
+   .cell-aoi-to-array-table-toolbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:8px;
+  }
+  
+  .cell-aoi-to-array-table-mode{
+    color:var(--cell-aoi-to-array-muted);
+    font-size:12px;
+  }
+  
+  .cell-aoi-to-array-table-wrap{
+    width:100%;
+    max-height:430px;
+    overflow:auto;
+    border:1px solid var(--cell-aoi-to-array-line);
+    border-radius:10px;
+  }
+  
+  .cell-aoi-to-array-table{
+    width:100%;
+    min-width:980px;
+    border-collapse:collapse;
+  }
+  
+  .cell-aoi-to-array-table thead th{
+    position:sticky;
+    top:0;
+    z-index:20;
+  
+    background:#202631;
+    color:#dce7f3;
+  
+    font-size:12px;
+    font-weight:650;
+    text-align:left;
+  
+    padding:8px 10px;
+    border-bottom:1px solid var(--cell-aoi-to-array-line-2);
+  
+    white-space:nowrap;
+    overflow:visible;
+  }
+  
+  .cell-aoi-to-array-table tbody td{
+    color:#e8e8e8;
+    font-size:12px;
+  
+    padding:8px 10px;
+    border-bottom:1px solid rgba(255,255,255,.06);
+  
+    white-space:nowrap;
+  }
+  
+  .cell-aoi-to-array-table tbody tr{
+    cursor:pointer;
+  }
+  
+  .cell-aoi-to-array-table tbody tr:hover{
+    background:#1d2430;
+  }
+  
+  .cell-aoi-to-array-table tbody tr.active{
+    background:#243046;
+  }
+  
+  /* =========================================================
+     Table Footer
+     ========================================================= */
+  
+  .cell-aoi-to-array-table-footer{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-top:10px;
+  }
+  
+  .cell-aoi-to-array-total-count{
+    color:var(--cell-aoi-to-array-muted);
+    font-size:12px;
+  }
+  
+  /* =========================================================
+     Detail Button
+     ========================================================= */
+  
+  .cell-aoi-to-array-detail-btn{
+    width:30px;
+    height:28px;
+  
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+  
+    border:1px solid #34507a;
+    border-radius:8px;
+  
+    background:#243046;
+    color:#fff;
+  
+    cursor:pointer;
+    font-size:15px;
+  }
+  
+  .cell-aoi-to-array-detail-btn:hover{
+    filter:brightness(1.18);
+  }
+  
+  .cell-aoi-to-array-detail-btn:active{
+    transform:translateY(1px);
+  }
+  
+  /* =========================================================
+     Pager
+     ========================================================= */
+  
+  .cell-aoi-to-array-pager{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+  }
+  
+  .cell-aoi-to-array-page-btn{
+    min-width:28px;
+    height:28px;
+  
+    border:1px solid #2a3140;
+    border-radius:7px;
+  
+    background:#1a1f28;
+    color:#d5deea;
+  
+    cursor:pointer;
+    font-size:12px;
+  }
+  
+  .cell-aoi-to-array-page-btn:hover{
+    filter:brightness(1.15);
+  }
+  
+  .cell-aoi-to-array-page-btn.active{
+    background:#243046;
+    border-color:#34507a;
+    color:#fff;
+  }
+  
+  .cell-aoi-to-array-page-btn:disabled{
+    opacity:.45;
+    cursor:not-allowed;
+  }
+  
+  .cell-aoi-to-array-page-ellipsis{
+    color:var(--cell-aoi-to-array-muted);
+    font-size:12px;
+    padding:0 4px;
+  }
+  
+  /* =========================================================
+     Excel-like Filter
+     ========================================================= */
+  
+  .cell-aoi-filter-th{
+    position:sticky;
+    top:0;
+    z-index:30;
+    overflow:visible;
+  }
+  
+  .cell-aoi-filter-head{
+    display:inline-flex;
+    align-items:center;
+    justify-content:flex-start;
+    gap:4px;
+  
+    position:relative;
+  
+    white-space:nowrap;
+    vertical-align:middle;
+  }
+  
+  .cell-aoi-filter-wrap{
+    position:relative;
+  
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+  
+    width:auto;
+    min-width:0;
+  }
+  
+  .cell-aoi-filter-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+  
+    width:14px;
+    height:14px;
+  
+    margin-left:2px;
+    padding:0;
+  
+    border:none;
+    background:none;
+  
+    color:#9ca3af;
+  
+    cursor:pointer;
+    font-size:11px;
+    line-height:1;
+  }
+  
+  .cell-aoi-filter-btn:hover{
+    color:#fff;
+  }
+  
+  .cell-aoi-filter-btn.active{
+    color:#60a5fa;
+  }
+  
+  .cell-aoi-filter-menu{
+    position:absolute;
+    top:20px;
+    right:0;
+    z-index:9999;
+  
+    min-width:180px;
+    max-width:260px;
+  
+    max-height:260px;
+    overflow:auto;
+  
+    background:#111827;
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:8px;
+  
+    padding:8px;
+  
+    box-shadow:0 8px 24px rgba(0,0,0,.35);
+  }
+  
+  .cell-aoi-filter-actions,
+  .cell-aoi-filter-sticky{
+    position:sticky;
+    top:-8px;
+    z-index:10;
+  
+    display:flex;
+    align-items:center;
+    gap:6px;
+  
+    padding:0 0 8px 0;
+    margin-bottom:8px;
+  
+    background:#111827;
+    border-bottom:1px solid rgba(255,255,255,.14);
+  }
+  
+  .cell-aoi-filter-actions button,
+  .cell-aoi-filter-sticky button{
+    min-height:24px;
+    padding:2px 8px;
+  
+    font-size:11px;
+  }
+  
+  .cell-aoi-filter-option{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  
+    padding:4px 2px;
+  
+    color:#e5e7eb;
+    font-size:12px;
+    white-space:nowrap;
+  
+    cursor:pointer;
+    user-select:none;
+  }
+  
+  .cell-aoi-filter-option:hover{
+    background:rgba(255,255,255,.06);
+  }
+  
+  .cell-aoi-filter-option input{
+    margin:0;
+  }
+  
+  /* =========================================================
+     Responsive
+     ========================================================= */
+  
+  @media (max-width:760px){
+  
+    .cell-aoi-to-array-table-footer{
+      align-items:flex-start;
+      flex-direction:column;
+    }
+  
+    .cell-aoi-to-array-pager{
+      justify-content:flex-start;
+    }
+  }
